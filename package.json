@@ -1,0 +1,34 @@
+{
+  "name": "barterer",
+  "homepage": "https://github.com/reelyactive/barterer/",
+  "author": "reelyActive <webdev@reelyactive.com>",
+  "description": "API serving real-time hyperlocal context from a barnacles instance.  We believe in an open Internet of Things.",
+  "keywords": [
+    "reelyActive",
+    "API",
+    "IoT"
+  ],
+  "version": "0.0.0",
+  "engines": {
+    "node": "^0.10.0"
+  },
+  "main": "./lib/server.js",
+  "bin": {
+    "barterer": "./bin/barterer"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/reelyactive/barterer.git"
+  },
+  "dependencies": {
+    "express": ">=4.0.0"
+  },
+  "devDependencies": {},
+  "bugs": {
+    "url": "https://github.com/reelyactive/barterer/issues"
+  },
+  "contributors": [
+    { "name": "Jeffrey Dungen" }
+  ],
+  "license": "MIT"
+}
