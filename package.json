@@ -2,13 +2,14 @@
   "name": "barterer",
   "homepage": "https://github.com/reelyactive/barterer/",
   "author": "reelyActive <webdev@reelyactive.com>",
-  "description": "API serving real-time hyperlocal context from a barnacles instance.  We believe in an open Internet of Things.",
+  "description": "Real-time location API.  We believe in an open Internet of Things.",
   "keywords": [
     "reelyActive",
     "API",
-    "IoT"
+    "IoT",
+    "RTLS"
   ],
-  "version": "0.0.0",
+  "version": "0.0.1",
   "engines": {
     "node": "^0.10.0"
   },
