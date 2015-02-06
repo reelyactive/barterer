@@ -2,8 +2,8 @@ barterer
 ========
 
 
-An API for real-time hyperlocal context
----------------------------------------
+An API for real-time location
+-----------------------------
 
 Barter is a system of exchange by which goods or services are directly exchanged for other goods or services without using a medium of exchange, such as money.
 
@@ -23,10 +23,10 @@ var api = new barterer();
 ```
 
 
-Querying Hyperlocal Context
+Querying Real-Time Location
 ---------------------------
 
-To query the real-time context where a Bluetooth Smart device is emitting the AdvA-48 identifier 1a:2b:3c:4d:5e:6f make the following request:
+To query the real-time location of a Bluetooth Smart device which is emitting the AdvA-48 identifier 1a:2b:3c:4d:5e:6f, make the following request:
 
 - [http://localhost:3001/id/1a2b3c4d5e6f](http://localhost:3001/id/1a2b3c4d5e6f)
 
