@@ -2,8 +2,8 @@ barterer
 ========
 
 
-An API for real-time location
------------------------------
+An API for real-time location and hyperlocal context
+----------------------------------------------------
 
 Barter is a system of exchange by which goods or services are directly exchanged for other goods or services without using a medium of exchange, such as money.
 
@@ -14,13 +14,24 @@ Installation
     npm install barterer
 
 
-Hello barterer
---------------
+Hello barterer, barnacles & barnowl
+-----------------------------------
 
 ```javascript
 var barterer = require('barterer');
+var barnacles = require('barnacles');
+var barnowl = require('barnowl');
+
 var api = new barterer();
+var notifications = new barnacles();
+var middleware = new barnowl();
+
+middleware.bind( { protocol: 'test', path: 'default' } );
+notifications.bind( { barnowl: middleware } );
+api.bind( { barnacles: notifications } );
 ```
+
+When the above is run, you can query the state of the two simulated devices by browsing to [http://localhost:3001/id/001bc50940100000](http://localhost:3001/id/001bc50940100000) and [http://localhost:3001/id/fee150bada55](http://localhost:3001/id/fee150bada55).
 
 
 Querying Real-Time Location
