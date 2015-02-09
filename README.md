@@ -2,10 +2,10 @@ barterer
 ========
 
 
-An API for real-time location and hyperlocal context
-----------------------------------------------------
+What's in a name?
+-----------------
 
-Barter is a system of exchange by which goods or services are directly exchanged for other goods or services without using a medium of exchange, such as money.
+barterer is an API for real-time location and hyperlocal context.  Why the name?  Barter is a system of exchange by which goods or services are directly exchanged for other goods or services without using a medium of exchange, such as money.  Sounds fitting for an API in an open Internet of Things.
 
 
 Installation
@@ -40,6 +40,34 @@ Querying Real-Time Location
 To query the real-time location of a Bluetooth Smart device which is emitting the AdvA-48 identifier 1a:2b:3c:4d:5e:6f, make the following request:
 
 - [http://localhost:3001/id/1a2b3c4d5e6f](http://localhost:3001/id/1a2b3c4d5e6f)
+
+To query the real-time context of a place named _reelyactive_ make the following request:
+
+- [http://localhost:3001/at/reelyactive](http://localhost:3001/at/reelyactive)
+
+A test place is permanently enabled and is associated with IDs 001bc50940800000 and 001bc50940810000:
+
+- [http://localhost:3001/at/test](http://localhost:3001/at/test)
+
+
+Where to bind?
+--------------
+
+__barnacles__
+
+[barnacles](https://www.npmjs.com/package/barnacles) provides the current state.  In the absence of a barnacles binding, barterer will always return a 404 Not Found status.  barterer can bind to a single instance of barnacles only.
+
+```javascript
+api.bind( { barnacles: notifications } );
+```
+
+__chickadee__
+
+[chickadee](https://www.npmjs.com/package/chickadee) provides the metadata associated with devices as well as the mapping of place names to device identifiers.  In the absence of a chickadee binding, barterer will always return a 501 Not Implemented status for at/ queries.  barterer can bind to a single instance of chickadee only.
+
+```javascript
+api.bind( { chickadee: associations } );
+```
 
 
 Options
