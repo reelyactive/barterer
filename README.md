@@ -34,20 +34,97 @@ api.bind( { barnacles: notifications } );
 When the above is run, you can query the state of the two simulated devices by browsing to [http://localhost:3001/id/001bc50940100000](http://localhost:3001/id/001bc50940100000) and [http://localhost:3001/id/fee150bada55](http://localhost:3001/id/fee150bada55).
 
 
-Querying Real-Time Location
----------------------------
+RESTful interactions
+--------------------
 
-To query the real-time location of a Bluetooth Smart device which is emitting the AdvA-48 identifier 1a:2b:3c:4d:5e:6f, make the following request:
+__GET /id/identifier__
 
-- [http://localhost:3001/id/1a2b3c4d5e6f](http://localhost:3001/id/1a2b3c4d5e6f)
+Retrieve real-time location/context for a given device.  For example, the identifier 001bc50940100000 would return:
 
-To query the real-time context of a place named _reelyactive_ make the following request:
+    {
+      "_meta": {
+        "message": "ok",
+        "statusCode": 200
+      },
+      "_links": {
+        "self": {
+          "href": "http://localhost:3001/id/001bc50940100000"
+        }
+      },
+      "devices": {
+        "001bc50940100000": {
+          "identifier": {
+            "type": "EUI-64",
+            "value": "001bc50940100000",
+            "flags": {
+              "transmissionCount": 0
+            }
+          },
+          "timestamp": "2015-01-01T12:34:56.789Z",
+          "radioDecodings": [
+            {
+              "rssi": 136,
+              "identifier": {
+                "type": "EUI-64",
+                "value": "001bc50940800000"
+              }
+            }
+          ],
+          "url": "http://reelyactive.com/metadata/test.json",
+          "href": "http://localhost:3001/id/001bc50940100000"
+        }
+      }
+    }
 
-- [http://localhost:3001/at/reelyactive](http://localhost:3001/at/reelyactive)
+__GET /at/place__
 
-A test place is permanently enabled and is associated with IDs 001bc50940800000 and 001bc50940810000:
+Retrieve real-time location/context for a given place.  For example, the place named _test_ would return:
 
-- [http://localhost:3001/at/test](http://localhost:3001/at/test)
+    {
+      "_meta": {
+        "message": "ok",
+        "statusCode": 200
+      },
+      "_links": {
+        "self": {
+          "href": "http://localhost:3001/at/test"
+         }
+      },
+      "devices": {
+        "001bc50940100000": {
+          "identifier": {
+            "type": "EUI-64",
+            "value": "001bc50940100000",
+            "flags": {
+              "transmissionCount": 0
+            }
+          },
+          "url": "http://reelyactive.com/metadata/test.json",
+          "href": "http://localhost:3001/id/001bc50940100000"
+        },
+        "fee150bada55": {
+          "identifier": {
+            "type": "ADVA-48",
+            "value": "fee150bada55",
+            "advHeader": {
+              "type": "ADV_NONCONNECT_IND",
+              "length": 22,
+              "txAdd": "random",
+              "rxAdd": "public"
+            },
+            "advData": {
+              "flags": [
+                "LE Limited Discoverable Mode",
+                "BR/EDR Not Supported"
+              ],
+              "completeLocalName": "reelyActive"
+            }
+          },
+          "url": "http://reelyactive.com/metadata/bluetoothsmart.json",
+          "href": "http://localhost:3001/id/fee150bada55"
+        }
+      }
+    }
 
 
 Where to bind?
