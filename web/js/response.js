@@ -20,7 +20,9 @@ angular.module('response', [])
           $scope.devices = data.devices;
         })
         .error(function(data, status, headers, config) {
-          console.log('Could not update query');
+          $scope.meta = data._meta;
+          $scope.links = data._links;
+          $scope.devices = {};
         });
     }
     $interval(updateQuery, REFRESH_MILLISECONDS);
