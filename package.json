@@ -10,7 +10,7 @@
     "hyperlocal context",
     "RTLS"
   ],
-  "version": "0.2.2",
+  "version": "0.2.3",
   "engines": {
     "node": "^0.10.0"
   },
