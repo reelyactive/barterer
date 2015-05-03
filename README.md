@@ -37,9 +37,9 @@ When the above is run, you can query the state of the two simulated devices by b
 RESTful interactions
 --------------------
 
-__GET /id/identifier__
+__GET /devices/id/context__
 
-Retrieve real-time location/context for a given device.  For example, the identifier 001bc50940100000 would return:
+Retrieve real-time location/context for a given device id.  For example, the id _001bc50940100000_ would be queried as GET /devices/001bc50940100000/context and might return:
 
     {
       "_meta": {
@@ -48,7 +48,7 @@ Retrieve real-time location/context for a given device.  For example, the identi
       },
       "_links": {
         "self": {
-          "href": "http://localhost:3001/id/001bc50940100000"
+          "href": "http://localhost:3001/devices/001bc50940100000/context"
         }
       },
       "devices": {
@@ -67,18 +67,20 @@ Retrieve real-time location/context for a given device.  For example, the identi
               "identifier": {
                 "type": "EUI-64",
                 "value": "001bc50940800000"
-              }
+              },
+              "url": "http://reelyactive.com/metadata/ra-rxxx.json",
+              "href": "http://localhost:3001/devices/001bc50940800000"
             }
           ],
           "url": "http://reelyactive.com/metadata/test.json",
-          "href": "http://localhost:3001/id/001bc50940100000"
+          "href": "http://localhost:3001/devices/001bc50940100000"
         }
       }
     }
 
-__GET /at/place__
+__GET /places/place/context__
 
-Retrieve real-time location/context for a given place.  For example, the place named _test_ would return:
+Retrieve real-time location/context for a given place.  For example, the place named _test_ would be queried as GET /places/test/context and might return:
 
     {
       "_meta": {
@@ -87,7 +89,7 @@ Retrieve real-time location/context for a given place.  For example, the place n
       },
       "_links": {
         "self": {
-          "href": "http://localhost:3001/at/test"
+          "href": "http://localhost:3001/places/test/context"
          }
       },
       "devices": {
@@ -99,8 +101,20 @@ Retrieve real-time location/context for a given place.  For example, the place n
               "transmissionCount": 0
             }
           },
+          "timestamp": "2015-01-01T12:34:56.789Z",
+          "radioDecodings": [
+            {
+              "rssi": 140,
+              "identifier": {
+                "type": "EUI-64",
+                "value": "001bc50940800000"
+              },
+              "url": "http://reelyactive.com/metadata/ra-rxxx.json",
+              "href": "http://localhost:3001/devices/001bc50940800000"
+            }
+          ],
           "url": "http://reelyactive.com/metadata/test.json",
-          "href": "http://localhost:3001/id/001bc50940100000"
+          "href": "http://localhost:3001/devices/001bc50940100000"
         },
         "fee150bada55": {
           "identifier": {
@@ -120,8 +134,20 @@ Retrieve real-time location/context for a given place.  For example, the place n
               "completeLocalName": "reelyActive"
             }
           },
+          "timestamp": "2015-01-01T12:34:56.789Z",
+          "radioDecodings": [
+            {
+              "rssi": 151,
+              "identifier": {
+                "type": "EUI-64",
+                "value": "001bc50940810000"
+              },
+              "url": "http://reelyactive.com/metadata/ra-rxxx.json",
+              "href": "http://localhost:3001/devices/001bc50940810000"
+            }
+          ],
           "url": "http://reelyactive.com/metadata/bluetoothsmart.json",
-          "href": "http://localhost:3001/id/fee150bada55"
+          "href": "http://localhost:3001/devices/fee150bada55"
         }
       }
     }
