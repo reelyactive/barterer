@@ -31,7 +31,7 @@ notifications.bind( { barnowl: middleware } );
 api.bind( { barnacles: notifications } );
 ```
 
-When the above is run, you can query the state of the two simulated devices by browsing to [http://localhost:3001/id/001bc50940100000](http://localhost:3001/id/001bc50940100000) and [http://localhost:3001/id/fee150bada55](http://localhost:3001/id/fee150bada55).
+When the above is run, you can query the context of the two simulated devices by browsing to [http://localhost:3001/devices/001bc50940100000/context](http://localhost:3001/devices/001bc50940100000/context) and [http://localhost:3001/devices/fee150bada55/context](http://localhost:3001/devices/fee150bada55/context).
 
 
 RESTful interactions
@@ -166,7 +166,7 @@ api.bind( { barnacles: notifications } );
 
 __chickadee__
 
-[chickadee](https://www.npmjs.com/package/chickadee) provides the metadata associated with devices as well as the mapping of place names to device identifiers.  In the absence of a chickadee binding, barterer will always return a 501 Not Implemented status for at/ queries.  barterer can bind to a single instance of chickadee only.
+[chickadee](https://www.npmjs.com/package/chickadee) provides the metadata associated with devices as well as the mapping of place names to device identifiers.  In the absence of a chickadee binding, barterer will always return a 501 Not Implemented status for places/ queries.  barterer can bind to a single instance of chickadee only.
 
 ```javascript
 api.bind( { chickadee: associations } );
