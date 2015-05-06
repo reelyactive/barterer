@@ -31,15 +31,15 @@ notifications.bind( { barnowl: middleware } );
 api.bind( { barnacles: notifications } );
 ```
 
-When the above is run, you can query the context of the two simulated devices by browsing to [http://localhost:3001/devices/001bc50940100000/context](http://localhost:3001/devices/001bc50940100000/context) and [http://localhost:3001/devices/fee150bada55/context](http://localhost:3001/devices/fee150bada55/context).
+When the above is run, you can query _whereis_ a given (transmitting) device such as [http://localhost:3001/whereis/001bc50940100000](http://localhost:3001/whereis/001bc50940100000), _whatat_ a given (receiving) device such as [http://localhost:3001/whatat/001bc50940800000](http://localhost:3001/whatat/001bc50940800000), and finally _whatnear_ a given (transmitting) device such as [http://localhost:3001/whatnear/001bc50940100000](http://localhost:3001/whatnear/001bc50940100000).
 
 
 RESTful interactions
 --------------------
 
-__GET /devices/id/context__
+__GET /whereis/id/__
 
-Retrieve real-time location/context for a given device id.  For example, the id _001bc50940100000_ would be queried as GET /devices/001bc50940100000/context and might return:
+Retrieve the most recent transmission by the given device id, including all the devices which decoded this transmission.  For example, the id _001bc50940100000_ would be queried as GET /whereis/001bc50940100000 and might return:
 
     {
       "_meta": {
@@ -48,7 +48,7 @@ Retrieve real-time location/context for a given device id.  For example, the id 
       },
       "_links": {
         "self": {
-          "href": "http://localhost:3001/devices/001bc50940100000/context"
+          "href": "http://localhost:3001/whereis/001bc50940100000"
         }
       },
       "devices": {
@@ -68,19 +68,17 @@ Retrieve real-time location/context for a given device id.  For example, the id 
                 "type": "EUI-64",
                 "value": "001bc50940800000"
               },
-              "url": "http://reelyactive.com/metadata/ra-rxxx.json",
-              "href": "http://localhost:3001/devices/001bc50940800000"
+              "href": "http://localhost:3001/whatat/001bc50940800000"
             }
           ],
-          "url": "http://reelyactive.com/metadata/test.json",
-          "href": "http://localhost:3001/devices/001bc50940100000"
+          "href": "http://localhost:3001/whereis/001bc50940100000"
         }
       }
     }
 
-__GET /places/place/context__
+__GET /whatat/id/__
 
-Retrieve real-time location/context for a given place.  For example, the place named _test_ would be queried as GET /places/test/context and might return:
+Retrieve all the most recent transmissions decoded by the device with the given id.  For example, the id _001bc50940800000_ would be queried as GET /whatat/001bc50940800000 and might return:
 
     {
       "_meta": {
@@ -89,8 +87,8 @@ Retrieve real-time location/context for a given place.  For example, the place n
       },
       "_links": {
         "self": {
-          "href": "http://localhost:3001/places/test/context"
-         }
+          "href": "http://localhost:3001/whatat/001bc50940800000"
+        }
       },
       "devices": {
         "001bc50940100000": {
@@ -104,53 +102,58 @@ Retrieve real-time location/context for a given place.  For example, the place n
           "timestamp": "2015-01-01T12:34:56.789Z",
           "radioDecodings": [
             {
-              "rssi": 140,
+              "rssi": 136,
               "identifier": {
                 "type": "EUI-64",
                 "value": "001bc50940800000"
               },
-              "url": "http://reelyactive.com/metadata/ra-rxxx.json",
-              "href": "http://localhost:3001/devices/001bc50940800000"
+              "href": "http://localhost:3001/whatat/001bc50940800000"
             }
           ],
-          "url": "http://reelyactive.com/metadata/test.json",
-          "href": "http://localhost:3001/devices/001bc50940100000"
-        },
-        "fee150bada55": {
+          "href": "http://localhost:3001/whereis/001bc50940100000"
+        }
+      }
+    }
+
+__GET /whatnear/id/__
+
+Retrieve all the most recent transmissions decoded by the device that decoded the given id the strongest.  You can think of this as a _whereis_ call followed by a _whatat_ call on the strongest decoder.  For example, the id _001bc50940100000_ would be queried as GET /whatnear/001bc50940100000 and might return:
+
+    {
+      "_meta": {
+        "message": "ok",
+        "statusCode": 200
+      },
+      "_links": {
+        "self": {
+          "href": "http://localhost:3001/whatnear/001bc50940100000"
+        }
+      },
+      "devices": {
+        "001bc50940100000": {
           "identifier": {
-            "type": "ADVA-48",
-            "value": "fee150bada55",
-            "advHeader": {
-              "type": "ADV_NONCONNECT_IND",
-              "length": 22,
-              "txAdd": "random",
-              "rxAdd": "public"
-            },
-            "advData": {
-              "flags": [
-                "LE Limited Discoverable Mode",
-                "BR/EDR Not Supported"
-              ],
-              "completeLocalName": "reelyActive"
+            "type": "EUI-64",
+            "value": "001bc50940100000",
+            "flags": {
+              "transmissionCount": 0
             }
           },
           "timestamp": "2015-01-01T12:34:56.789Z",
           "radioDecodings": [
             {
-              "rssi": 151,
+              "rssi": 136,
               "identifier": {
                 "type": "EUI-64",
-                "value": "001bc50940810000"
+                "value": "001bc50940800000"
               },
-              "url": "http://reelyactive.com/metadata/ra-rxxx.json",
-              "href": "http://localhost:3001/devices/001bc50940810000"
+              "href": "http://localhost:3001/whatat/001bc50940800000"
             }
           ],
-          "url": "http://reelyactive.com/metadata/bluetoothsmart.json",
-          "href": "http://localhost:3001/devices/fee150bada55"
+          "href": "http://localhost:3001/whereis/001bc50940100000"
         }
       }
     }
+
 
 
 Where to bind?
@@ -162,14 +165,6 @@ __barnacles__
 
 ```javascript
 api.bind( { barnacles: notifications } );
-```
-
-__chickadee__
-
-[chickadee](https://www.npmjs.com/package/chickadee) provides the metadata associated with devices as well as the mapping of place names to device identifiers.  In the absence of a chickadee binding, barterer will always return a 501 Not Implemented status for places/ queries.  barterer can bind to a single instance of chickadee only.
-
-```javascript
-api.bind( { chickadee: associations } );
 ```
 
 
