@@ -5,7 +5,7 @@ barterer
 What's in a name?
 -----------------
 
-barterer is an API for real-time location and hyperlocal context.  Why the name?  Barter is a system of exchange by which goods or services are directly exchanged for other goods or services without using a medium of exchange, such as money.  Sounds fitting for an API in an open Internet of Things.
+barterer is an API for the real-time location or wireless devices.  Why the name?  Barter is a system of exchange by which goods or services are directly exchanged for other goods or services without using a medium of exchange, such as money.  Sounds fitting for an API in an open Internet of Things.
 
 
 Installation
@@ -24,61 +24,22 @@ var barnowl = require('barnowl');
 
 var api = new barterer();
 var notifications = new barnacles();
-var middleware = new barnowl();
+var middleware = new barnowl( { n: 2 } );
 
 middleware.bind( { protocol: 'test', path: 'default' } );
 notifications.bind( { barnowl: middleware } );
 api.bind( { barnacles: notifications } );
 ```
 
-When the above is run, you can query _whereis_ a given (transmitting) device such as [http://localhost:3001/whereis/001bc50940100000](http://localhost:3001/whereis/001bc50940100000), _whatat_ a given (receiving) device such as [http://localhost:3001/whatat/001bc50940800000](http://localhost:3001/whatat/001bc50940800000), and finally _whatnear_ a given (transmitting) device such as [http://localhost:3001/whatnear/001bc50940100000](http://localhost:3001/whatnear/001bc50940100000).
+When the above is run, you can query _whereis_ a given (transmitting) device such as [http://localhost:3001/whereis/transmitter/001bc50940100000](http://localhost:3001/whereis/transmitter/001bc50940100000), _whatat_ a given (receiving) device such as [http://localhost:3001/whatat/receiver/001bc50940800000](http://localhost:3001/whatat/receiver/001bc50940800000), and finally _whatnear_ a given (transmitting) device such as [http://localhost:3001/whatnear/transmitter/001bc50940100000](http://localhost:3001/whatnear/transmitter/001bc50940100000).
 
 
 RESTful interactions
 --------------------
 
-__GET /whereis/id/__
+__GET /whereis/transmitter/{device-id}/__
 
-Retrieve the most recent transmission by the given device id, including all the devices which decoded this transmission.  For example, the id _001bc50940100000_ would be queried as GET /whereis/001bc50940100000 and might return:
-
-    {
-      "_meta": {
-        "message": "ok",
-        "statusCode": 200
-      },
-      "_links": {
-        "self": {
-          "href": "http://localhost:3001/whereis/001bc50940100000"
-        }
-      },
-      "devices": {
-        "001bc50940100000": {
-          "identifier": {
-            "type": "EUI-64",
-            "value": "001bc50940100000",
-            "flags": {
-              "transmissionCount": 0
-            }
-          },
-          "timestamp": "2015-01-01T12:34:56.789Z",
-          "radioDecodings": [
-            {
-              "rssi": 136,
-              "identifier": {
-                "type": "EUI-64",
-                "value": "001bc50940800000"
-              },
-              "href": "http://localhost:3001/whatat/001bc50940800000"
-            }
-          ],
-          "href": "http://localhost:3001/whereis/001bc50940100000"
-        }
-      }
-    }
-
-__GET /whatat/id/__
-
-Retrieve all the most recent transmissions decoded by the device with the given id.  For example, the id _001bc50940800000_ would be queried as GET /whatat/001bc50940800000 and might return:
+Retrieve the most recent transmission by the given device id.  The response includes all the receiver devices which decoded this transmission, ordered by decreasing RSSI.  For example, the id _fee150bada55_ would be queried as GET /whereis/transmitter/fee150bada55 and might return:
 
     {
       "_meta": {
@@ -87,16 +48,27 @@ Retrieve all the most recent transmissions decoded by the device with the given 
       },
       "_links": {
         "self": {
-          "href": "http://localhost:3001/whatat/001bc50940800000"
+          "href": "http://localhost:3001/whereis/transmitter/fee150bada55"
         }
       },
       "devices": {
-        "001bc50940100000": {
+        "fee150bada55": {
           "identifier": {
-            "type": "EUI-64",
-            "value": "001bc50940100000",
-            "flags": {
-              "transmissionCount": 0
+          {
+            "type": "ADVA-48",
+            "value": "fee150bada55",
+            "advHeader": {
+              "type": "ADV_NONCONNECT_IND",
+              "length": 22,
+              "txAdd": "random",
+              "rxAdd": "public"
+            },
+            "advData": {
+              "flags": [
+                "LE Limited Discoverable Mode",
+                "BR/EDR Not Supported"
+              ],
+              "completeLocalName": "reelyActive"
             }
           },
           "timestamp": "2015-01-01T12:34:56.789Z",
@@ -105,19 +77,27 @@ Retrieve all the most recent transmissions decoded by the device with the given 
               "rssi": 136,
               "identifier": {
                 "type": "EUI-64",
-                "value": "001bc50940800000"
+                "value": "001bc50940810000"
               },
-              "href": "http://localhost:3001/whatat/001bc50940800000"
+              "href": "http://localhost:3001/whatat/receiver/001bc50940810000"
+            },
+            {
+              "rssi": 130,
+              "identifier": {
+                "type": "EUI-64",
+                "value": "001bc50940810001"
+              },
+              "href": "http://localhost:3001/whatat/receiver/001bc50940810001"
             }
           ],
-          "href": "http://localhost:3001/whereis/001bc50940100000"
+          "href": "http://localhost:3001/whereis/transmitter/fee150bada55"
         }
       }
     }
 
-__GET /whatnear/id/__
+__GET /whatat/receiver/{device-id}/__
 
-Retrieve all the most recent transmissions decoded by the device that decoded the given id the strongest.  You can think of this as a _whereis_ call followed by a _whatat_ call on the strongest decoder.  For example, the id _001bc50940100000_ would be queried as GET /whatnear/001bc50940100000 and might return:
+Retrieve all the most recent transmissions decoded by the receiver device with the given device id.  For example, the id _001bc50940810000_ would be queried as GET /whatat/receiver/001bc50940810000 and might return:
 
     {
       "_meta": {
@@ -126,34 +106,114 @@ Retrieve all the most recent transmissions decoded by the device that decoded th
       },
       "_links": {
         "self": {
-          "href": "http://localhost:3001/whatnear/001bc50940100000"
+          "href": "http://localhost:3001/whatat/receiver/001bc50940810000"
         }
       },
       "devices": {
-        "001bc50940100000": {
+        "fee150bada55": {
           "identifier": {
-            "type": "EUI-64",
-            "value": "001bc50940100000",
-            "flags": {
-              "transmissionCount": 0
+          {
+            "type": "ADVA-48",
+            "value": "fee150bada55",
+            "advHeader": {
+              "type": "ADV_NONCONNECT_IND",
+              "length": 22,
+              "txAdd": "random",
+              "rxAdd": "public"
+            },
+            "advData": {
+              "flags": [
+                "LE Limited Discoverable Mode",
+                "BR/EDR Not Supported"
+              ],
+              "completeLocalName": "reelyActive"
             }
           },
           "timestamp": "2015-01-01T12:34:56.789Z",
           "radioDecodings": [
             {
-              "rssi": 136,
+              "rssi": 144,
               "identifier": {
                 "type": "EUI-64",
-                "value": "001bc50940800000"
+                "value": "001bc50940810001"
               },
-              "href": "http://localhost:3001/whatat/001bc50940800000"
+              "href": "http://localhost:3001/whatat/receiver/001bc50940810001"
+            },
+            {
+              "rssi": 139,
+              "identifier": {
+                "type": "EUI-64",
+                "value": "001bc50940810000"
+              },
+              "href": "http://localhost:3001/whatat/receiver/001bc50940810000"
             }
           ],
-          "href": "http://localhost:3001/whereis/001bc50940100000"
+          "href": "http://localhost:3001/whereis/transmitter/fee150bada55"
         }
       }
     }
 
+In the above example, note that queried receiver device (001bc50940810000) does not necessarily decode the transmitting device (fee150bada55) with the strongest RSSI.
+
+__GET /whatnear/transmitter/{device-id}/__
+
+Retrieve all the most recent transmissions decoded by the device that decoded the given id the strongest.  You can think of this as a _whereis_ call followed by a _whatat_ call on the strongest receiver.  For example, the id _fee150bada55_ would be queried as GET /whatnear/transmitter/fee150bada55 and might return:
+
+    {
+      "_meta": {
+        "message": "ok",
+        "statusCode": 200
+      },
+      "_links": {
+        "self": {
+          "href": "http://localhost:3001/whatnear/transmitter/fee150bada55"
+        }
+      },
+      "devices": {
+        "fee150bada55": {
+          "identifier": {
+          {
+            "type": "ADVA-48",
+            "value": "fee150bada55",
+            "advHeader": {
+              "type": "ADV_NONCONNECT_IND",
+              "length": 22,
+              "txAdd": "random",
+              "rxAdd": "public"
+            },
+            "advData": {
+              "flags": [
+                "LE Limited Discoverable Mode",
+                "BR/EDR Not Supported"
+              ],
+              "completeLocalName": "reelyActive"
+            }
+          },
+          "timestamp": "2015-01-01T12:34:56.789Z",
+          "radioDecodings": [
+            {
+              "rssi": 141,
+              "identifier": {
+                "type": "EUI-64",
+                "value": "001bc50940810000"
+              },
+              "href": "http://localhost:3001/whatat/receiver/001bc50940810000"
+            },
+            {
+              "rssi": 138,
+              "identifier": {
+                "type": "EUI-64",
+                "value": "001bc50940810001"
+              },
+              "href": "http://localhost:3001/whatat/receiver/001bc50940810001"
+            }
+          ],
+          "href": "http://localhost:3001/whereis/transmitter/fee150bada55"
+        }
+      }
+    }
+
+In the above example, note that there are no other transmitter devices near the queried transmitter device (fee150bada55).  If there were other transmitter devices nearby they would be included in the set of "devices".
 
 
 Where to bind?
