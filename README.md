@@ -5,7 +5,7 @@ barterer
 What's in a name?
 -----------------
 
-barterer is an API for the real-time location or wireless devices.  Why the name?  Barter is a system of exchange by which goods or services are directly exchanged for other goods or services without using a medium of exchange, such as money.  Sounds fitting for an API in an open Internet of Things.
+barterer is an API for the real-time location of wireless devices.  Why the name?  Barter is a system of exchange by which goods or services are directly exchanged for other goods or services without using a medium of exchange, such as money.  Sounds fitting for an API in an open Internet of Things.
 
 
 Installation
@@ -31,7 +31,10 @@ notifications.bind( { barnowl: middleware } );
 api.bind( { barnacles: notifications } );
 ```
 
-When the above is run, you can query _whereis_ a given (transmitting) device such as [http://localhost:3001/whereis/transmitter/001bc50940100000](http://localhost:3001/whereis/transmitter/001bc50940100000), _whatat_ a given (receiving) device such as [http://localhost:3001/whatat/receiver/001bc50940800000](http://localhost:3001/whatat/receiver/001bc50940800000), and finally _whatnear_ a given (transmitting) device such as [http://localhost:3001/whatnear/transmitter/001bc50940100000](http://localhost:3001/whatnear/transmitter/001bc50940100000).
+When the above is run, you can query _whereis_ a given (transmitting) device, _whatat_ a given (receiving) device, and _whatnear_ a given (transmitting) device:
+- [http://localhost:3001/whereis/transmitter/001bc50940100000](http://localhost:3001/whereis/transmitter/001bc50940100000)
+- [http://localhost:3001/whatat/receiver/001bc50940800000](http://localhost:3001/whatat/receiver/001bc50940800000)
+- [http://localhost:3001/whatnear/transmitter/001bc50940100000](http://localhost:3001/whatnear/transmitter/001bc50940100000)
 
 
 RESTful interactions
