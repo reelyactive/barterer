@@ -2,10 +2,23 @@ barterer
 ========
 
 
+A real-time location & sensor data API for the IoT
+--------------------------------------------------
+
+barterer is an API for the real-time location of wireless devices.  It answers queries concerning _where is_ and _what near_ a given transmitting device as well as _what at_ a given receiving device.  The responses include the parsed wireless packet data and the identifiers and signal strength of all receiving devices.
+
+__In the scheme of Things (pun intended)__
+
+The [barnowl](https://www.npmjs.com/package/barnowl), [barnacles](https://www.npmjs.com/package/barnacles), barterer and [chickadee](https://www.npmjs.com/package/chickadee) packages all work together as a unit, conveniently bundled as [hlc-server](https://www.npmjs.com/package/hlc-server).  Check out our [developer page](http://reelyactive.github.io/) for more resources on reelyActive software and hardware.
+
+
+![barterer logo](http://reelyactive.com/images/barterer.jpg)
+
+
 What's in a name?
 -----------------
 
-barterer is an API for the real-time location of wireless devices.  Why the name?  Barter is a system of exchange by which goods or services are directly exchanged for other goods or services without using a medium of exchange, such as money.  Sounds fitting for an API in an open Internet of Things.
+Barter is a system of exchange by which goods or services are directly exchanged for other goods or services without using a medium of exchange, such as money.  Seems fitting for an API in an open Internet of Things.
 
 
 Installation
