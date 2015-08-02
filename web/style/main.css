@@ -1,121 +1,41 @@
 body {
   background: #fff;
   font-family: 'Source Sans Pro', sans-serif;
-  font-weight: 300;
-  font-size: 14pt;
-  line-height: 1.75em;
-  color: #39454b;
-  letter-spacing: 0.5px;
-  text-align: center;
-  margin: 0;
-}
-
-img { 
-  display: block;
-  max-width: 100%;
-  margin: 3em auto;
-}
-
-a {
-  color: #0770a2;
-  text-decoration: none;
-
-  -moz-transition: all 0.2s ease-in-out, color 0.2s ease-in-out;
-  -webkit-transition: all 0.2s ease-in-out, color 0.2s ease-in-out;
-  -o-transition: all 0.2s ease-in-out, color 0.2s ease-in-out;
-  -ms-transition: all 0.2s ease-in-out, color 0.2s ease-in-out;
-  transition: all 0.2s ease-in-out, color 0.2s ease-in-out;
-}
-
-a {
-  color: #0770a2;
-  text-decoration: none;
-
-  -moz-transition: all 0.2s ease-in-out, color 0.2s ease-in-out;
-  -webkit-transition: all 0.2s ease-in-out, color 0.2s ease-in-out;
-  -o-transition: all 0.2s ease-in-out, color 0.2s ease-in-out;
-  -ms-transition: all 0.2s ease-in-out, color 0.2s ease-in-out;
-  transition: all 0.2s ease-in-out, color 0.2s ease-in-out;
-}
-
-  a:hover {
-     text-shadow: 0px 1px 1px #aaaaaa;
-  }
-
-table {
-  border-collapse: collapse;
-  border: 1px solid #5a5a5a;
-  width: 100%;
-  font-size: 12pt;
-}
-
-th, td {
-  border: 1px solid #5a5a5a;
-  padding: 1px;
 }
 
 header {
-  background-color: #5a5a5a;
-  color: #fff;
-  text-align: left;
-}
-
-  header h1 {
-    margin-top: 0;
-    padding: 4px;
-  }
-
-footer {
-  background-color: #5a5a5a;
-  color: #fff;
-  text-align: right;
-}
-
-  footer a {
-    color: #fff;
-  }
-
-#content {
-  min-width: 480px;
-  width: 50%;
-  max-width: 960px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.device-header {
   background-color: #0770a2;
   color: #fff;
-  text-align: left;
+  font-size: 2.5em;
+  padding: 0.2em;
+  margin-bottom: 1em;
 }
 
-  .device-header a {
-    color: #fff;
-    font-weight: 600;
+.identifier {
+  font-family: monospace;
+  font-size: 1.4em;
+  font-weight: bold;
+  color: #5a5a5a;
+}
+
+#footer {
+  position: relative;
+  height: 5em;
+  line-height: 5em;
+  margin: 0;
+  background: #0770a2;
+  color: #999;
+  color: rgba(255,255,255,0.5);
+  font-size: 1.2em;
+  overflow: hidden;
+  text-align: center;
+}
+
+  #footer a {
+    color: #999;
+    color: rgba(255,255,255,0.5);
   }
 
-.device-identifier {
-  float: left;
-  width: 50%;
-  text-align: left;
-}
-
-  .device-identifier pre {
-    font-size: 10pt;
-    line-height: 1.0em;
-    margin-top: 8px;
-    margin-left: 1em;
+  #footer a:hover {
+    color: rgba(255,255,255,0.7);
   }
-
-.device-decodings {
-  float: left;
-  width: 50%;
-}
-
-  .device-decodings table {
-    margin-top: 8px;
-  }
-
-.device-footer {
-  clear: both;
-}

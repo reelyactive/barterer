@@ -1,36 +1,66 @@
 <!DOCTYPE HTML>
 <html>
   <head>
-    <title> reelyActive API </title>
+    <title> reelyActive barterer API </title>
     <link rel="stylesheet" href="../../style/main.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.1/angular.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.13.1/ui-bootstrap-tpls.min.js"></script>
     <script type="text/javascript" src="../../js/response.js"></script>
   </head>
   <body ng-app="response">
     <div ng-controller="ApiCtrl" id="content">
-      <header> <h1> Status: {{meta.message}} </h1> </header>
-      <div ng-repeat="(id, device) in devices">
-        <div class="device-header">
-          <a ng-href="{{device.href}}"> {{id}} </a>
-        </div>
-        <div class="device-identifier">
-          <pre>{{device.identifier | json}}</pre>
-        </div>
-        <div class="device-decodings">
-          <table>
-            <tr>
-              <th> RSSI </th>
-              <th> Receiver ID </th>
-            </tr>
-            <tr ng-repeat="decoding in device.radioDecodings">
-              <td> {{decoding.rssi}} </td>
-              <td> <a ng-href="{{decoding.href}}"> {{decoding.identifier.value}} </a> </td>
-            </tr>
-          </table>
-        </div>
-        <div class="device-footer"> &nbsp; </div>
+      <header>
+        <strong>Status: {{meta.message}}</strong> &nbsp; | &nbsp;
+        <span dropdown on-toggle="toggled(open)">
+          <a href id="polling-dropdown" dropdown-toggle style="color:#fff">
+            {{pollingMessage}} <span class="caret"></span>
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="polling-dropdown">
+            <li> <a href ng-click="updatePeriod(null)">Disable polling</a> </li>
+            <li> <a href ng-click="updatePeriod(2000)">Poll every 2 seconds</a> </li>
+            <li> <a href ng-click="updatePeriod(10000)">Poll every 10 seconds</a> </li>
+            <li class="divider">
+            <li> <a href ng-click="expand = true">Expand all</a> </li>
+            <li> <a href ng-click="expand = false">Collapse all</a> </li>
+          </ul>
+        </span>
+      </header>
+      <div ng-show="isEmpty()"> 
+        <img src="http://reelyactive.com/images/barterer-none.jpg" class="img-responsive center-block">
       </div>
-      <footer> <a ng-href="{{links.self.href}}"> {{links.self.href}} </a> </footer>
+      <accordion ng-repeat="(id, device) in devices">
+        <accordion-group is-open="expand">
+          <accordion-heading>
+            <span class="identifier"> {{id}} </span>
+          </accordion-heading>
+          <div class="row">
+            <div class="col-xs-12 col-md-6">
+              <pre>{{device.identifier | json}}</pre>
+            </div>
+            <div class="col-xs-12 col-md-6">
+              <table class="table table-hover">
+                <tr>
+                  <th> RSSI </th>
+                  <th> Receiver ID </th>
+                </tr>
+                <tr ng-repeat="decoding in device.radioDecodings">
+                  <td> {{decoding.rssi}} </td>
+                  <td> <a ng-href="{{decoding.href}}"> {{decoding.identifier.value}} </a> </td>
+                </tr>
+              </table>
+              <p class="text-center"> Query
+                <a ng-href="{{device.href}}"> /whereis/transmitter/{{id}} </a>
+              </p>
+            </div>
+          </div>
+        </accordion-group>
+      </accordion>
+      <footer id="footer">
+        <a href="https://github.com/reelyactive/barterer"> barterer </a>
+        &nbsp; | &nbsp;
+        <a href="http://context.reelyactive.com"> &copy; reelyActive 2015 </a>
+      </footer>
     </div>
   </body>
 </html>
