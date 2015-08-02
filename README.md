@@ -263,7 +263,7 @@ You can create an instance of barterer with any or all of the following options 
 What's next?
 ------------
 
-This is an active work in progress.  Expect regular changes and updates, as well as improved documentation!  If you're developing with chickadee check out:
+This is an active work in progress.  Expect regular changes and updates, as well as improved documentation!  If you're developing with barterer check out:
 * [diyActive](http://reelyactive.github.io/) our developer page
 * our [node-style-guide](https://github.com/reelyactive/node-style-guide) for development
 * our [contact information](http://context.reelyactive.com/contact.html) to get in touch if you'd like to contribute
