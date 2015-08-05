@@ -2,30 +2,51 @@
 <html>
   <head>
     <title> reelyActive barterer API </title>
-    <link rel="stylesheet" href="../../style/main.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../../style/main.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.1/angular.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.13.1/ui-bootstrap-tpls.min.js"></script>
     <script type="text/javascript" src="../../js/response.js"></script>
   </head>
   <body ng-app="response">
     <div ng-controller="ApiCtrl" id="content">
-      <header>
-        <strong>Status: {{meta.message}}</strong> &nbsp; | &nbsp;
-        <span dropdown on-toggle="toggled(open)">
-          <a href id="polling-dropdown" dropdown-toggle style="color:#fff">
-            {{pollingMessage}} <span class="caret"></span>
+      <nav class="navbar navbar-default" role="navigation">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle"
+                  ng-init="navCollapsed = true"
+                  ng-click="navCollapsed = !navCollapsed">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="http://context.reelyactive.com">
+            <strong>reely</strong>Active
           </a>
-          <ul class="dropdown-menu" aria-labelledby="polling-dropdown">
-            <li> <a href ng-click="updatePeriod(null)">Disable polling</a> </li>
-            <li> <a href ng-click="updatePeriod(2000)">Poll every 2 seconds</a> </li>
-            <li> <a href ng-click="updatePeriod(10000)">Poll every 10 seconds</a> </li>
-            <li class="divider">
-            <li> <a href ng-click="expand = true">Expand all</a> </li>
-            <li> <a href ng-click="expand = false">Collapse all</a> </li>
+        </div>
+        <div class="collapse navbar-collapse" ng-class="!navCollapsed && 'in'"
+             ng-click="navCollapsed = true">
+          <ul class="nav navbar-nav navbar-right">
+            <li class="dropdown" dropdown on-toggle="toggled(open)">
+              <a href class="dropdown-toggle" dropdown-toggle role="button"
+                 data-toggle="dropdown" aria-haspopup="true"
+                 aria-expanded="false">
+                {{pollingMessage}} <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu">
+                <li><a href ng-click="updatePeriod(null)">Disable polling</a></li>
+                <li><a href ng-click="updatePeriod(2000)">Poll every 2 seconds</a></li>
+                <li><a href ng-click="updatePeriod(10000)">Poll every 10 seconds</a></li>
+              </ul>
+            </li>
+            <li>
+              <a href ng-click="expand = !expand">
+                {{expand? 'Collapse all' : 'Expand all'}}
+              </a>
+            </li>
           </ul>
-        </span>
-      </header>
+        </div>
+      </nav>
       <div ng-show="isEmpty()"> 
         <img src="http://reelyactive.com/images/barterer-none.jpg" class="img-responsive center-block">
       </div>
@@ -46,7 +67,11 @@
                 </tr>
                 <tr ng-repeat="decoding in device.radioDecodings">
                   <td> {{decoding.rssi}} </td>
-                  <td> <a ng-href="{{decoding.href}}"> {{decoding.identifier.value}} </a> </td>
+                  <td>
+                    <a ng-href="{{decoding.href}}">
+                      {{decoding.identifier.value}}
+                    </a>
+                  </td>
                 </tr>
               </table>
               <p class="text-center"> Query

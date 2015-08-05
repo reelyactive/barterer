@@ -3,20 +3,79 @@ body {
   font-family: 'Source Sans Pro', sans-serif;
 }
 
-header {
-  background-color: #0770a2;
-  color: #fff;
-  font-size: 2.5em;
-  padding: 0.2em;
-  margin-bottom: 1em;
-}
-
 .identifier {
   font-family: monospace;
   font-size: 1.4em;
   font-weight: bold;
   color: #5a5a5a;
 }
+
+/* Begin Bootstrap 3 navbar override */
+.navbar-default {
+    background-color: #0770a2;
+    border-color: #5a5a5a;
+}
+.navbar-default .navbar-brand {
+    color: #ddd;
+}
+.navbar-default .navbar-brand:hover,
+.navbar-default .navbar-brand:focus {
+    color: #fff;
+}
+.navbar-default .navbar-nav > li > a {
+    color: #ddd;
+}
+.navbar-default .navbar-nav > li > a:hover,
+.navbar-default .navbar-nav > li > a:focus {
+    color: #fff;
+}
+.navbar-default .navbar-nav > .active > a, 
+.navbar-default .navbar-nav > .active > a:hover, 
+.navbar-default .navbar-nav > .active > a:focus {
+    color: #ddd;
+    background-color: #0770a2;
+}
+.navbar-default .navbar-nav > .open > a, 
+.navbar-default .navbar-nav > .open > a:hover, 
+.navbar-default .navbar-nav > .open > a:focus {
+    color: #ddd;
+    background-color: #0770a2;
+}
+.navbar-default .navbar-nav > .dropdown > a .caret {
+    border-top-color: #ddd;
+    border-bottom-color: #ddd;
+}
+.navbar-default .navbar-nav > .dropdown > a:hover .caret,
+.navbar-default .navbar-nav > .dropdown > a:focus .caret {
+    border-top-color: #fff;
+    border-bottom-color: #fff;
+}
+.navbar-default .navbar-nav > .open > a .caret, 
+.navbar-default .navbar-nav > .open > a:hover .caret, 
+.navbar-default .navbar-nav > .open > a:focus .caret {
+    border-top-color: #ddd;
+    border-bottom-color: #ddd;
+}
+.navbar-default .navbar-toggle {
+    border-color: #5a5a5a;
+}
+.navbar-default .navbar-toggle:hover,
+.navbar-default .navbar-toggle:focus {
+    background-color: #5a5a5a;
+}
+.navbar-default .navbar-toggle .icon-bar {
+    background-color: #5a5a5a;
+}
+@media (max-width: 767px) {
+    .navbar-default .navbar-nav .open .dropdown-menu > li > a {
+        color: #ddd;
+    }
+    .navbar-default .navbar-nav .open .dropdown-menu > li > a:hover,
+    .navbar-default .navbar-nav .open .dropdown-menu > li > a:focus {
+        color: #fff;
+    }
+}
+/* End Bootstrap 3 navbar override */
 
 #footer {
   position: relative;
