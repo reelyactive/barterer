@@ -1,6 +1,12 @@
+html {
+  position: relative;
+  min-height: 100%;
+}
+
 body {
   background: #fff;
   font-family: 'Source Sans Pro', sans-serif;
+  margin-bottom: 60px;
 }
 
 .identifier {
@@ -57,14 +63,14 @@ body {
     border-bottom-color: #ddd;
 }
 .navbar-default .navbar-toggle {
-    border-color: #5a5a5a;
+    border-color: #ddd;
 }
 .navbar-default .navbar-toggle:hover,
 .navbar-default .navbar-toggle:focus {
-    background-color: #5a5a5a;
+    background-color: #ddd;
 }
 .navbar-default .navbar-toggle .icon-bar {
-    background-color: #5a5a5a;
+    background-color: #fff;
 }
 @media (max-width: 767px) {
     .navbar-default .navbar-nav .open .dropdown-menu > li > a {
@@ -77,24 +83,24 @@ body {
 }
 /* End Bootstrap 3 navbar override */
 
-#footer {
-  position: relative;
-  height: 5em;
-  line-height: 5em;
-  margin: 0;
-  background: #0770a2;
-  color: #999;
-  color: rgba(255,255,255,0.5);
-  font-size: 1.2em;
-  overflow: hidden;
+.footer {
+  position: absolute;
+  bottom: 0;
+  margin-top: 30px;
+  width: 100%;
+  height: 60px;
+  line-height: 60px;
+  color: #ddd;
+  background-color: #0770a2;
   text-align: center;
+  overflow: hidden;
 }
 
-  #footer a {
-    color: #999;
-    color: rgba(255,255,255,0.5);
+  .footer a {
+    color: #ddd;
   }
 
-  #footer a:hover {
-    color: rgba(255,255,255,0.7);
+  .footer a:hover {
+    color: #fff;
+    text-decoration: none;
   }
