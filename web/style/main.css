@@ -19,7 +19,7 @@ body {
 /* Begin Bootstrap 3 navbar override */
 .navbar-default {
     background-color: #0770a2;
-    border-color: #5a5a5a;
+    border-color: #06638f;
 }
 .navbar-default .navbar-brand {
     color: #ddd;
@@ -39,13 +39,13 @@ body {
 .navbar-default .navbar-nav > .active > a:hover, 
 .navbar-default .navbar-nav > .active > a:focus {
     color: #ddd;
-    background-color: #0770a2;
+    background-color: #076a99;
 }
 .navbar-default .navbar-nav > .open > a, 
 .navbar-default .navbar-nav > .open > a:hover, 
 .navbar-default .navbar-nav > .open > a:focus {
     color: #ddd;
-    background-color: #0770a2;
+    background-color: #06638f;
 }
 .navbar-default .navbar-nav > .dropdown > a .caret {
     border-top-color: #ddd;
@@ -67,7 +67,7 @@ body {
 }
 .navbar-default .navbar-toggle:hover,
 .navbar-default .navbar-toggle:focus {
-    background-color: #ddd;
+    background-color: #06638f;
 }
 .navbar-default .navbar-toggle .icon-bar {
     background-color: #fff;

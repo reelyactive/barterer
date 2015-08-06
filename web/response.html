@@ -27,6 +27,7 @@
         <div class="collapse navbar-collapse" ng-class="!navCollapsed && 'in'"
              ng-click="navCollapsed = true">
           <ul class="nav navbar-nav navbar-right">
+            <li class="active"><a href> Status: {{meta.message}} </a></li>
             <li class="dropdown" dropdown on-toggle="toggled(open)">
               <a href class="dropdown-toggle" dropdown-toggle role="button"
                  data-toggle="dropdown" aria-haspopup="true"
@@ -53,7 +54,7 @@
       <accordion ng-repeat="(id, device) in devices">
         <accordion-group is-open="expand">
           <accordion-heading>
-            <span class="identifier"> {{id}} </span>
+            <span class="identifier"> {{id}} <span class="caret"></span></span>
           </accordion-heading>
           <div class="row">
             <div class="col-xs-12 col-md-6">
