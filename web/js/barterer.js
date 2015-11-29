@@ -19,8 +19,8 @@ angular.module('response', [ 'ui.bootstrap' ])
           $scope.devices = data.devices;
         })
         .error(function(data, status, headers, config) {
-          $scope.meta = { message: "error", statusCode: status };
-          $scope.links = { self: { href: url } };
+          $scope.meta = data._meta;
+          $scope.links = data._links;
           $scope.devices = {};
         });
     }
