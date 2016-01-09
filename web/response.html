@@ -67,12 +67,15 @@
                   <tr>
                     <th> RSSI </th>
                     <th> Receiver ID </th>
+                    <th> Query </th>
                   </tr>
                   <tr ng-repeat="decoding in device.radioDecodings">
                     <td> {{decoding.rssi}} </td>
+                    <td> {{decoding.identifier.value}} </td>
                     <td>
-                      <a ng-href="{{decoding.href}}">
-                        {{decoding.identifier.value}}
+                      <a ng-href="{{decoding.href}}" role="button"
+                         class="btn btn-default btn-xs">
+                        What at {{decoding.identifier.value}}?
                       </a>
                     </td>
                   </tr>
