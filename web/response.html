@@ -2,10 +2,11 @@
 <html>
   <head>
     <title> reelyActive barterer API </title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../../style/main.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.1/angular.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.13.1/ui-bootstrap-tpls.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.7/angular.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.13.4/ui-bootstrap-tpls.min.js"></script>
     <script type="text/javascript" src="../../js/barterer.js"></script>
   </head>
   <body ng-app="response">
@@ -48,41 +49,43 @@
           </ul>
         </div>
       </nav>
-      <div ng-show="isEmpty()"> 
-        <img src="http://reelyactive.com/images/barterer-none.jpg" class="img-responsive center-block">
+      <div class="container-fluid">
+        <div ng-show="isEmpty()"> 
+          <img src="http://reelyactive.com/images/barterer-none.jpg" class="img-responsive center-block">
+        </div>
+        <accordion ng-repeat="(id, device) in devices">
+          <accordion-group is-open="expand">
+            <accordion-heading>
+              <span class="identifier"> {{id}} <span class="caret"></span></span>
+            </accordion-heading>
+            <div class="row">
+              <div class="col-xs-12 col-md-6">
+                <pre>{{device.identifier | json}}</pre>
+              </div>
+              <div class="col-xs-12 col-md-6">
+                <table class="table table-hover">
+                  <tr>
+                    <th> RSSI </th>
+                    <th> Receiver ID </th>
+                  </tr>
+                  <tr ng-repeat="decoding in device.radioDecodings">
+                    <td> {{decoding.rssi}} </td>
+                    <td>
+                      <a ng-href="{{decoding.href}}">
+                        {{decoding.identifier.value}}
+                      </a>
+                    </td>
+                  </tr>
+                </table>
+                <p class="text-center">
+                  <a ng-href="{{device.href}}" role="button"
+                     class="btn btn-default"> Where is {{id}}? </a>
+                </p>
+              </div>
+            </div>
+          </accordion-group>
+        </accordion>
       </div>
-      <accordion ng-repeat="(id, device) in devices">
-        <accordion-group is-open="expand">
-          <accordion-heading>
-            <span class="identifier"> {{id}} <span class="caret"></span></span>
-          </accordion-heading>
-          <div class="row">
-            <div class="col-xs-12 col-md-6">
-              <pre>{{device.identifier | json}}</pre>
-            </div>
-            <div class="col-xs-12 col-md-6">
-              <table class="table table-hover">
-                <tr>
-                  <th> RSSI </th>
-                  <th> Receiver ID </th>
-                </tr>
-                <tr ng-repeat="decoding in device.radioDecodings">
-                  <td> {{decoding.rssi}} </td>
-                  <td>
-                    <a ng-href="{{decoding.href}}">
-                      {{decoding.identifier.value}}
-                    </a>
-                  </td>
-                </tr>
-              </table>
-              <p class="text-center">
-                <a ng-href="{{device.href}}" role="button"
-                   class="btn btn-default"> Where is {{id}}? </a>
-              </p>
-            </div>
-          </div>
-        </accordion-group>
-      </accordion>
       <footer class="footer">
         <a href="https://github.com/reelyactive/barterer"> barterer </a>
         &nbsp; | &nbsp;
