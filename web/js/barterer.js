@@ -36,11 +36,6 @@ angular.module('response', [ 'ui.bootstrap', 'n3-line-chart' ])
     }
 
     function updateAllRSSI(devices) {
-      for(device in devices) {
-        if(!$scope.devicesRSSI.hasOwnProperty(device)) {
-          addChart(device);
-        }
-      }
       for(device in $scope.devicesRSSI) {
         if($scope.showChart[device] && devices.hasOwnProperty(device)) {
           updateRSSI(devices, device);
@@ -98,7 +93,10 @@ angular.module('response', [ 'ui.bootstrap', 'n3-line-chart' ])
 
     $scope.toggleChart = function(device) {
       if($scope.showChart.hasOwnProperty(device)) {
-        if($scope.showChart) {
+        if(!$scope.showChart[device]) {
+          addChart(device);
+        }
+        else {
           clearChart(device);
         }
         $scope.showChart[device] = !$scope.showChart[device];
