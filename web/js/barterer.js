@@ -42,7 +42,7 @@ angular.module('response', [ 'ui.bootstrap', 'n3-line-chart' ])
         }
       }
       for(device in $scope.devicesRSSI) {
-        if(devices.hasOwnProperty(device)) {
+        if($scope.showChart[device] && devices.hasOwnProperty(device)) {
           updateRSSI(devices, device);
         }
       }
@@ -65,7 +65,10 @@ angular.module('response', [ 'ui.bootstrap', 'n3-line-chart' ])
 
     function addChart(device) {
       $scope.devicesRSSI[device] = { dataset0: [] };
-      $scope.charts[device] = { series: [], axes: {x: {key: "t"}, y: {padding: {min:2, max: 2}}} };
+      $scope.charts[device] = {
+        series: [],
+        axes: {x: {key: "t"}, y: {padding: {min:2, max: 4}}}
+      };
     }
 
     function addChartSeries(device, key) {
