@@ -12,7 +12,7 @@ __In the scheme of Things (pun intended)__
 The [barnowl](https://www.npmjs.com/package/barnowl), [barnacles](https://www.npmjs.com/package/barnacles), barterer and [chickadee](https://www.npmjs.com/package/chickadee) packages all work together as a unit, conveniently bundled as [hlc-server](https://www.npmjs.com/package/hlc-server).  Check out our [developer page](https://reelyactive.github.io/) for more resources on reelyActive software and hardware.
 
 
-![barterer logo](http://reelyactive.github.io/barterer/images/barterer-bubble.png)
+![barterer logo](https://reelyactive.github.io/barterer/images/barterer-bubble.png)
 
 
 What's in a name?
@@ -274,7 +274,7 @@ License
 
 MIT License
 
-Copyright (c) 2015-2016 reelyActive
+Copyright (c) 2015-2017 reelyActive
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
