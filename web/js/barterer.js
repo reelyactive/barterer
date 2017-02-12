@@ -16,23 +16,22 @@ angular.module('response', [ 'ui.bootstrap', 'n3-line-chart' ])
     $scope.charts = {};
     $scope.showChart = {};
     $scope.expand = true;
+    $http.defaults.headers.common.Accept = 'application/json';
 
     function updateQuery() {
       elapsedSeconds += periodSeconds;
-      $http.defaults.headers.common.Accept = 'application/json';
-      $http.get(url)
-        .success(function(data, status, headers, config) {
-          $scope.meta = data._meta;
-          $scope.links = data._links;
-          $scope.devices = data.devices;
-          updateAllRSSI(data.devices);
-        })
-        .error(function(data, status, headers, config) {
-          $scope.meta = data._meta;
-          $scope.links = data._links;
+      $http({ method: 'GET', url: url })
+        .then(function(response) { // Success
+          $scope.meta = response.data._meta;
+          $scope.links = response.data._links;
+          $scope.devices = response.data.devices;
+          updateAllRSSI(response.data.devices);
+        }, function(response) {    // Error
+          $scope.meta = response.data._meta;
+          $scope.links = response.data._links;
           $scope.devices = {};
           updateAllRSSI({});
-        });
+      });
     }
 
     function updateAllRSSI(devices) {
