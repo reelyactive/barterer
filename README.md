@@ -9,7 +9,7 @@ barterer is an API for the real-time location of wireless devices.  It answers q
 
 __In the scheme of Things (pun intended)__
 
-The [barnowl](https://www.npmjs.com/package/barnowl), [barnacles](https://www.npmjs.com/package/barnacles), barterer and [chickadee](https://www.npmjs.com/package/chickadee) packages all work together as a unit, conveniently bundled as [hlc-server](https://www.npmjs.com/package/hlc-server).  Check out our [API overview](http://context.reelyactive.com/api.html#rtls) as well as our [developer page](http://reelyactive.github.io/) for more resources on reelyActive software and hardware.
+The [barnowl](https://www.npmjs.com/package/barnowl), [barnacles](https://www.npmjs.com/package/barnacles), barterer and [chickadee](https://www.npmjs.com/package/chickadee) packages all work together as a unit, conveniently bundled as [hlc-server](https://www.npmjs.com/package/hlc-server).  Check out our [developer page](https://reelyactive.github.io/) for more resources on reelyActive software and hardware.
 
 
 ![barterer logo](http://reelyactive.github.io/barterer/images/barterer-bubble.png)
@@ -264,9 +264,9 @@ What's next?
 ------------
 
 This is an active work in progress.  Expect regular changes and updates, as well as improved documentation!  If you're developing with barterer check out:
-* [diyActive](http://reelyactive.github.io/) our developer page
+* [diyActive](https://reelyactive.github.io/) our developer page
 * our [node-style-guide](https://github.com/reelyactive/node-style-guide) and [angular-style-guide](https://github.com/reelyactive/angular-style-guide) for development
-* our [contact information](http://context.reelyactive.com/contact.html) to get in touch if you'd like to contribute
+* our [contact information](http://www.reelyactive.com/contact/) to get in touch if you'd like to contribute
 
 
 License
