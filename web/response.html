@@ -45,6 +45,19 @@
                 <li role="menuitem"><a href ng-click="updatePeriod(10000)">Poll every 10 seconds</a></li>
               </ul>
             </li>
+            <li class="dropdown" uib-dropdown on-toggle="toggled(open)">
+              <a href class="dropdown-toggle" uib-dropdown-toggle role="button"
+                 data-toggle="dropdown" aria-haspopup="true"
+                 aria-expanded="false">
+                {{orderingMessage}} <span class="caret"></span>
+              </a>
+              <ul class="dropdown-menu" uib-dropdown-menu role="menu">
+                <li role="menuitem"><a href ng-click="updateOrdering('+id')">Order by increasing ID</a></li>
+                <li role="menuitem"><a href ng-click="updateOrdering('-id')">Order by decreasing ID</a></li>
+                <li role="menuitem"><a href ng-click="updateOrdering('+rssi')">Order by increasing RSSI</a></li>
+                <li role="menuitem"><a href ng-click="updateOrdering('-rssi')">Order by decreasing RSSI</a></li>
+              </ul>
+            </li>
             <li>
               <a href ng-click="expand = !expand">
                 {{expand? 'Collapse all' : 'Expand all'}}
@@ -58,10 +71,10 @@
           <img src="../../images/barterer-none.jpg"
                class="img-responsive center-block">
         </div>
-        <uib-accordion ng-repeat="(id, device) in devices">
+        <uib-accordion ng-repeat="device in transmitters | orderBy: ordering">
           <div uib-accordion-group class="panel-default" is-open="expand">
             <uib-accordion-heading>
-              <span class="identifier"> {{id}} <span class="caret"></span></span>
+              <span class="identifier"> {{device.id}} <span class="caret"></span></span>
             </uib-accordion-heading>
             <div class="row">
               <div class="col-xs-12 col-md-6">
@@ -87,16 +100,17 @@
                 </table>
                 <p class="text-center">
                   <a ng-href="{{device.href}}" role="button"
-                     class="btn btn-default"> Where is {{id}}? </a>
+                     class="btn btn-default"> Where is {{device.id}}? </a>
                   <button class="btn btn-default"
-                          ng-init="showChart[id] = false"
-                          ng-click="toggleChart(id)">
-                    {{showChart[id]? 'Hide graph' : 'Show graph'}}
+                          ng-init="showChart[device.id] = false"
+                          ng-click="toggleChart(device.id)">
+                    {{showChart[device.id]? 'Hide graph' : 'Show graph'}}
                   </button>
                 </p>
-                <div class="rssi-chart" ng-show="showChart[id]">
-                  <linechart ng-if="showChart[id]" data="devicesRSSI[id]"
-                             options="charts[id]"></linechart>
+                <div class="rssi-chart" ng-show="showChart[device.id]">
+                  <linechart ng-if="showChart[device.id]"
+                             data="devicesRSSI[device.id]"
+                             options="charts[device.id]"></linechart>
                 </div>
               </div>
             </div>

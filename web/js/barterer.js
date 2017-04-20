@@ -1,4 +1,5 @@
 DEFAULT_POLLING_MILLISECONDS = 2000;
+DEFAULT_ORDERING = '+id';
 MAX_DATA_POINTS = 8;
 COLORS = [ '#ff6900', '#0770a2', '#aec844' ];
 
@@ -13,9 +14,11 @@ angular.module('response', [ 'ui.bootstrap', 'n3-line-chart' ])
     $scope.links = { self: { href: url } };
     $scope.devices = {};
     $scope.devicesRSSI = {};
+    $scope.transmitters = [];
     $scope.charts = {};
     $scope.showChart = {};
     $scope.expand = true;
+    $scope.ordering = DEFAULT_ORDERING;
     $http.defaults.headers.common.Accept = 'application/json';
 
     function updateQuery() {
@@ -25,13 +28,26 @@ angular.module('response', [ 'ui.bootstrap', 'n3-line-chart' ])
           $scope.meta = response.data._meta;
           $scope.links = response.data._links;
           $scope.devices = response.data.devices;
+          $scope.transmitters = prepareTransmitters(response.data.devices);
           updateAllRSSI(response.data.devices);
         }, function(response) {    // Error
           $scope.meta = response.data._meta;
           $scope.links = response.data._links;
           $scope.devices = {};
+          $scope.transmitters = [];
           updateAllRSSI({});
       });
+    }
+
+    function prepareTransmitters(devices) {
+      var transmitterArray = [];
+      for(id in devices) {
+        var device = devices[id];
+        device.id = id;
+        device.rssi = device.radioDecodings[0].rssi;
+        transmitterArray.push(device);
+      }
+      return transmitterArray;
     }
 
     function updateAllRSSI(devices) {
@@ -116,6 +132,28 @@ angular.module('response', [ 'ui.bootstrap', 'n3-line-chart' ])
       }
     };
 
+    $scope.updateOrdering = function(ordering) {
+      switch(ordering) {
+        case '+id':
+          $scope.ordering = 'id';
+          $scope.orderingMessage = 'Increasing ID';
+          break;
+        case '-id':
+          $scope.ordering = '-id';
+          $scope.orderingMessage = 'Decreasing ID';
+          break;    
+        case '+rssi':
+          $scope.ordering = 'rssi';
+          $scope.orderingMessage = 'Increasing RSSI';
+          break;
+        case '-rssi':
+          $scope.ordering = '-rssi';
+          $scope.orderingMessage = 'Decreasing RSSI';
+          break; 
+      }
+    };
+
     updateQuery();
     $scope.updatePeriod(DEFAULT_POLLING_MILLISECONDS);
+    $scope.updateOrdering(DEFAULT_ORDERING);
   });
