@@ -5,12 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Real-time location and sensor data API.">
     <link rel="stylesheet" href="../../style/bootstrap.min.css">
-    <link rel="stylesheet" href="../../style/LineChart.min.css">
     <link rel="stylesheet" href="../../style/barterer.css">
     <script type="text/javascript" src="../../js/angular.min.js"></script>
     <script type="text/javascript" src="../../js/ui-bootstrap-tpls.min.js"></script>
-    <script type="text/javascript" src="../../js/d3.min.js"></script>
-    <script type="text/javascript" src="../../js/LineChart.min.js"></script>
+    <script type="text/javascript" src="../../js/Chart.min.js"></script>
+    <script type="text/javascript" src="../../js/angular-chart.min.js"></script>
     <script type="text/javascript" src="../../js/barterer.js"></script>
   </head>
   <body ng-app="response">
@@ -102,16 +101,19 @@
                   <a ng-href="{{device.href}}" role="button"
                      class="btn btn-default"> Where is {{device.id}}? </a>
                   <button class="btn btn-default"
-                          ng-init="showChart[device.id] = false"
+
                           ng-click="toggleChart(device.id)">
                     {{showChart[device.id]? 'Hide graph' : 'Show graph'}}
                   </button>
                 </p>
-                <div class="rssi-chart" ng-show="showChart[device.id]">
-                  <linechart ng-if="showChart[device.id]"
-                             data="devicesRSSI[device.id]"
-                             options="charts[device.id]"></linechart>
-                </div>
+                <canvas id="line" class="chart chart-line"
+                        ng-if="showChart[device.id]"
+                        chart-data="charts[device.id].data"
+                        chart-labels="charts[device.id].labels"
+                        chart-series="charts[device.id].series"
+                        chart-colors="chartColors"
+                        chart-options="lineChartOptions">
+                </canvas>
               </div>
             </div>
           </div>

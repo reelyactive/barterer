@@ -1,9 +1,21 @@
 DEFAULT_POLLING_MILLISECONDS = 2000;
 DEFAULT_ORDERING = '+id';
-MAX_DATA_POINTS = 8;
-COLORS = [ '#ff6900', '#0770a2', '#aec844' ];
+MAX_LINE_CHART_DATA_POINTS = 8;
+LINE_CHART_OPTIONS = {
+  legend: {
+    display: true,
+    position: 'bottom'
+  },
+  scales: {
+    xAxes: [{
+      type: 'linear',
+      position: 'bottom'
+    }]
+  }
+};
+COLORS = [ '#ff6900', '#0770a2', '#aec844', '#5a5a5a' ];
 
-angular.module('response', [ 'ui.bootstrap', 'n3-line-chart' ])
+angular.module('response', [ 'ui.bootstrap', 'chart.js' ])
 
   // API controller
   .controller('ApiCtrl', function($scope, $http, $interval, $window) {
@@ -13,13 +25,15 @@ angular.module('response', [ 'ui.bootstrap', 'n3-line-chart' ])
     $scope.meta = { message: "loading", statusCode: "..." };
     $scope.links = { self: { href: url } };
     $scope.devices = {};
-    $scope.devicesRSSI = {};
     $scope.transmitters = [];
     $scope.charts = {};
     $scope.showChart = {};
     $scope.expand = true;
     $scope.ordering = DEFAULT_ORDERING;
     $http.defaults.headers.common.Accept = 'application/json';
+
+    $scope.chartColors = COLORS;
+    $scope.lineChartOptions = LINE_CHART_OPTIONS;
 
     function updateQuery() {
       elapsedSeconds += periodSeconds;
@@ -29,13 +43,13 @@ angular.module('response', [ 'ui.bootstrap', 'n3-line-chart' ])
           $scope.links = response.data._links;
           $scope.devices = response.data.devices;
           $scope.transmitters = prepareTransmitters(response.data.devices);
-          updateAllRSSI(response.data.devices);
+          updateAllCharts(response.data.devices);
         }, function(response) {    // Error
           $scope.meta = response.data._meta;
           $scope.links = response.data._links;
           $scope.devices = {};
           $scope.transmitters = [];
-          updateAllRSSI({});
+          updateAllCharts({});
       });
     }
 
@@ -50,56 +64,60 @@ angular.module('response', [ 'ui.bootstrap', 'n3-line-chart' ])
       return transmitterArray;
     }
 
-    function updateAllRSSI(devices) {
-      for(device in $scope.devicesRSSI) {
+    function updateAllCharts(devices) {
+      for(device in $scope.charts) {
         if($scope.showChart[device] && devices.hasOwnProperty(device)) {
-          updateRSSI(devices, device);
+          updateChart(devices, device);
         }
       }
     }
 
-    function updateRSSI(devices, device) {
-      var datapoint = { t: elapsedSeconds };
+    function updateChart(devices, device) {
+      var chart = $scope.charts[device];
+      chart.labels.push(elapsedSeconds);
+      var numberOfSamples = Math.min(chart.labels.length,
+                                     MAX_LINE_CHART_DATA_POINTS);
+
       var decodings = devices[device].radioDecodings;
       for(var cReceiver = 0; cReceiver < decodings.length; cReceiver++) {
         var receiverId = decodings[cReceiver].identifier.value;
         var rssi = decodings[cReceiver].rssi;
-        datapoint[receiverId] = rssi;
-        addChartSeries(device, receiverId);
+        var index = chart.series.indexOf(receiverId);
+        if(index < 0) {
+          chart.series.push(receiverId);
+          index = chart.series.indexOf(receiverId);
+          chart.data.push([]);
+        }
+        chart.data[index].push( { x: elapsedSeconds, y: rssi } );
       }
-      $scope.devicesRSSI[device].dataset0.push(datapoint);
-      if($scope.devicesRSSI[device].dataset0.length > MAX_DATA_POINTS) {
-        $scope.devicesRSSI[device].dataset0.shift();
+      if(chart.labels.length > MAX_LINE_CHART_DATA_POINTS) {
+        chart.labels.shift();
+      }
+      for(var cSeries = 0; cSeries < chart.series.length; cSeries++) {
+        var cSample = 0;
+        while(cSample < chart.data[cSeries].length) {
+          if(chart.labels.indexOf(chart.data[cSeries][cSample].x) < 0) {
+            chart.data[cSeries].shift();
+          }
+          else {
+            cSample++;
+          }
+        }
       }
     }
 
     function addChart(device) {
-      $scope.devicesRSSI[device] = { dataset0: [] };
       $scope.charts[device] = {
+        labels: [],
         series: [],
-        axes: {x: {key: "t"}, y: {padding: {min:2, max: 4}}}
+        data: []
       };
     }
 
-    function addChartSeries(device, key) {
-      var series = $scope.charts[device].series;
-      if(series.length >= COLORS.length) return;
-      for(var cSeries = 0; cSeries < series.length; cSeries++) {
-        if(series[cSeries].key === key) return;
-      }
-      series.push({
-        axis: "y",
-        dataset: "dataset0",
-        key: key,
-        label: key,
-        type: ['line'],
-        color: COLORS[series.length]
-      });
-    }
-
     function clearChart(device) {
+      $scope.charts[device].labels = [];
       $scope.charts[device].series = [];
-      $scope.devicesRSSI[device].dataset0 = [];
+      $scope.charts[device].data = [];
     }
 
     $scope.isEmpty = function () {
@@ -107,14 +125,13 @@ angular.module('response', [ 'ui.bootstrap', 'n3-line-chart' ])
     }
 
     $scope.toggleChart = function(device) {
-      if($scope.showChart.hasOwnProperty(device)) {
-        if(!$scope.showChart[device]) {
-          addChart(device);
-        }
-        else {
-          clearChart(device);
-        }
-        $scope.showChart[device] = !$scope.showChart[device];
+      if($scope.showChart.hasOwnProperty(device) && $scope.showChart[device]) {
+        clearChart(device);
+        $scope.showChart[device] = false;
+      }
+      else {
+        addChart(device);
+        $scope.showChart[device] = true;
       }
     }
 
