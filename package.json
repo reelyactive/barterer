@@ -13,7 +13,7 @@
   "engines": {
     "node": ">=6.0.0"
   },
-  "main": "./lib/server.js",
+  "main": "./lib/barterer.js",
   "scripts": {
     "start": "node bin/barterer"
   },
