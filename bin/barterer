@@ -1,8 +1,23 @@
 #!/usr/bin/env node
 
-var path = require('path');
-var fs = require('fs');
-var lib = path.join(path.dirname(fs.realpathSync(__filename)), '../lib');
+const http = require('http');
+const express = require('express');
+const bodyParser = require('body-parser');
+const Barterer = require('../lib/barterer.js');
 
-require(lib + '/server.js');
+
+const PORT = process.env.PORT || 3001;
+
+
+let app = express();
+app.use(bodyParser.json());
+
+let server = http.createServer(app);
+server.listen(PORT, function() {
+  console.log('barterer instance is listening on port', PORT);
+});
+
+const options = { app: app };
+
+let api = new Barterer(options);
 
