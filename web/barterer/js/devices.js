@@ -37,13 +37,13 @@ let devices = document.querySelector('#devices');
 
 
 // Other variables
-let devicesUrl = window.location.href;
-let devicesIndex = devicesUrl.indexOf(DEVICES_ROUTE);
-let deviceIdSignature = devicesUrl.substring(devicesIndex + 9);
+let queryUrl = window.location.href;
+let devicesUrl = window.location.protocol + '//' + window.location.hostname +
+                 ':' + window.location.port + DEVICES_ROUTE;
 
 
 // Initialisation: GET the associations and display in DOM
-getDevices(devicesUrl, function(status, response) {
+getDevices(queryUrl, function(status, response) {
   jsonResponse.textContent = JSON.stringify(response, null, 2);
   loading.hidden = true;
 
@@ -91,13 +91,18 @@ function updateDevices(devicesList) {
 
 // Create the device card visualisation
 function createDeviceCard(signature, device) {
-  let card = createElement('div', 'card');
+  let isEmptyDevice = (Object.keys(device).length === 0);
+  let deviceUrl = devicesUrl + '/' + signature;
+  let card = createElement('div', 'card mb-1');
   let header = createElement('div', 'card-header bg-dark text-white lead');
-  let idIcon = createElement('i', 'fas fa-barcode');
+  let headerIcon = createElement('i', 'fas fa-barcode');
+  let headerText = createElement('span', 'font-monospace', ' ' + signature);
   let body = createElement('div', 'card-body');
-
-  header.appendChild(idIcon);
-  header.appendChild(createElement('span', 'font-monospace', ' ' + signature));
+  let footer = createElement('small', 'card-footer');
+  let footerIcon = createElement('i', 'fas fa-link text-muted');
+  let footerSpace = document.createTextNode(' ');
+  let footerText = createElement('a', 'text-truncate', deviceUrl);
+  footerText.setAttribute('href', deviceUrl);
 
   if(device.hasOwnProperty('raddec')) {
     let raddecCard = createRaddecCard(device.raddec);
@@ -112,8 +117,14 @@ function createDeviceCard(signature, device) {
     body.appendChild(statidCard);
   }
 
+  header.appendChild(headerIcon);
+  header.appendChild(headerText);
+  footer.appendChild(footerIcon);
+  footer.appendChild(footerSpace);
+  footer.appendChild(footerText);
   card.appendChild(header);
-  card.appendChild(body);
+  if(!isEmptyDevice) { card.appendChild(body); }
+  card.appendChild(footer);
 
   return card;
 }
