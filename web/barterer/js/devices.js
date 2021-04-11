@@ -151,16 +151,40 @@ function createDeviceAccordion(device) {
 
 // Create the raddec visualisation
 function createRaddecContent(raddec) {
-  let content = new DocumentFragment();
-  let raddecList = createRaddecList(raddec);
-  let rssiSignatureTable = createRssiSignatureTable(raddec.rssiSignature);
-  let packetsAccordion = createPacketsAccordion(raddec.packets);
+  let deviceIcon = createElement('i', 'fas fa-wifi');
+  let deviceHeader = createElement('th', 'bg-ambient text-white text-center',
+                                   deviceIcon);
+  let deviceId = raddec.transmitterId + ' / ' +
+                 IDENTIFIER_TYPES[raddec.transmitterIdType]
+  let deviceText = createElement('td', 'font-monospace', deviceId);
+  let deviceRow = createElement('tr', null, [ deviceHeader, deviceText ]);
+  let eventIcon = createElement('i', 'fas fa-exchange-alt');
+  let eventHeader = createElement('th', 'bg-info text-white text-center',
+                                   eventIcon);
+  let eventElements = createEventElements(raddec.events);
+  let eventTimestamp =  ' \u00a0@ ' +
+                        new Date(raddec.timestamp).toLocaleTimeString();
+  let eventText = createElement('td', null, [ eventElements, eventTimestamp ]);
+  let eventRow = createElement('tr', null, [ eventHeader, eventText ]);
+  let receiverIcon = createElement('i', 'fas fa-broadcast-tower');
+  let receiverHeader = createElement('th', 'bg-success text-white text-center',
+                                     receiverIcon);
+  let receiverTable = createElement('td', null,
+                                createRssiSignatureTable(raddec.rssiSignature));
+  let receiverRow = createElement('tr', null, [ receiverHeader,
+                                                receiverTable ]);
+  let packetsIcon = createElement('i', 'fas fa-info');
+  let packetsHeader = createElement('th', 'bg-ambient text-white text-center',
+                                    packetsIcon);
+  let packetsCollapse = createElement('td', null, 
+                                      createPacketsCollapse(raddec.packets));
+  let packetsRow = createElement('tr', null, [ packetsHeader,
+                                               packetsCollapse ]);
+  let tbody = createElement('tbody', null, [ deviceRow, eventRow, receiverRow,
+                                             packetsRow ]);
+  let table = createElement('table', 'table', tbody);
 
-  content.appendChild(raddecList);
-  content.appendChild(rssiSignatureTable);
-  content.appendChild(packetsAccordion);
-
-  return content;
+  return table;
 }
 
 
@@ -222,121 +246,52 @@ function createStatidContent(statid) {
 }
 
 
-// Create the identifier, timestamp and events inline list visualisation
-function createRaddecList(raddec) {
-  let ul = createElement('ul', 'list-inline text-center');
-  let transmitterId = createElement('li', 'list-inline-item mx-3');
-  let transmitterIdIcon = createElement('i', 'fas fa-wifi text-ambient');
-  let transmitterIdValue = createElement('span', 'font-monospace', ' \u00a0' +
-                                                   raddec.transmitterId);
-  let transmitterIdType = createElement('li', 'list-inline-item mx-3');
-  let transmitterIdTypeIcon = createElement('i',
-                                           'fas fa-info-circle text-ambient');
-  let transmitterIdTypeValue = document.createTextNode(' \u00a0' +
-                                    IDENTIFIER_TYPES[raddec.transmitterIdType]);
-  let timestamp = createElement('li', 'list-inline-item mx-3');
-  let timestampIcon = createElement('i', 'fas fa-clock text-muted');
-  let timestampValue = document.createTextNode(' \u00a0' + 
-                               new Date(raddec.timestamp).toLocaleTimeString());
-  let events = createElement('li', 'list-inline-item mx-3');
-  let eventsIcon = createElement('i', 'fas fa-exchange-alt text-muted');
-  let eventsValue = createEventElements(raddec.events);
-
-  transmitterId.appendChild(transmitterIdIcon);
-  transmitterId.appendChild(transmitterIdValue);
-  transmitterIdType.appendChild(transmitterIdTypeIcon);
-  transmitterIdType.appendChild(transmitterIdTypeValue);
-  timestamp.appendChild(timestampIcon);
-  timestamp.appendChild(timestampValue);
-  events.appendChild(eventsIcon);
-  events.appendChild(eventsValue);
-  ul.appendChild(transmitterId);
-  ul.appendChild(transmitterIdType);
-  ul.appendChild(timestamp);
-  ul.appendChild(events);
-
-  return ul;
-}
-
 // Create the rssiSignature table visualisation
 function createRssiSignatureTable(rssiSignature) {
-  let table = createElement('table', 'table table-hover');
-  let caption = createElement('caption', null, 'rssiSignature');
-  let thead = createElement('thead');
   let tbody = createElement('tbody');
-  let headrow = createElement('tr');
-  let receiver = createElement('th');
-  let receiverIcon = createElement('i', 'fas fa-broadcast-tower text-success');
-  let decodings = createElement('th');
-  let decodingsIcon = createElement('i', 'fas fa-hashtag text-success');
-  let rssi = createElement('th');
-  let rssiIcon = createElement('i', 'fas fa-signal text-success');
-  
-  receiver.appendChild(receiverIcon);
-  decodings.appendChild(decodingsIcon);
-  rssi.appendChild(rssiIcon);
-  headrow.appendChild(receiver);
-  headrow.appendChild(decodings);
-  headrow.appendChild(rssi);
-  thead.appendChild(headrow);
 
   rssiSignature.forEach(function(item, index) {
     let signature = item.receiverId + SIGNATURE_SEPARATOR + item.receiverIdType;
     let rowClass = (index === 0) ? 'table-success' : null;
-    let row = createElement('tr', rowClass);
     let receiverSignature = createElement('td', 'font-monospace', signature);
-    let numberOfDecodings = createElement('td', null, item.numberOfDecodings);
-    let rssiValue = createElement('td', null, item.rssi + ' dBm');
+    let decodingText = item.numberOfDecodings + ' @ ' + item.rssi + ' dBm';
+    let decodings = createElement('td', 'font-monospace', decodingText);
+    let row = createElement('tr', rowClass, [ receiverSignature, decodings ]);
 
-    row.appendChild(receiverSignature);
-    row.appendChild(numberOfDecodings);
-    row.appendChild(rssiValue);
     tbody.appendChild(row);
   });
 
-  table.appendChild(caption);
-  table.appendChild(thead);
-  table.appendChild(tbody);
-
-  return table;
+  return createElement('table', 'table table-hover mb-0', tbody);
 }
 
 
-// Create the packets accordion visualisation
-function createPacketsAccordion(packets) {
-  let accordion = createElement('div', 'accordion accordion-flush');
-  let accordionItem = createElement('div', 'accordion-item');
-  let accordionHeader = createElement('h5', 'accordion-header');
-  let accordionButton = createElement('button', 'accordion-button collapsed',
-                                      'Packets (' + packets.length + ')');
-  let accordionCollapse = createElement('div', 'accordion-collapse collapse');
-  let accordionBody = createElement('ul', 'accordion-body list-unstyled');
+// Create the packets collapse visualisation
+function createPacketsCollapse(packets) {
+  let content = new DocumentFragment();
+  let button = createElement('button', 'btn btn-outline-ambient btn-sm',
+                             'Packets (' + packets.length + ')');
+  let collapse = createElement('ul', 'collapse list-unstyled mt-2');
 
   packets.forEach(function(packet) {
-    let packetListItem = createElement('li', 'font-monospace user-select-all',
-                                   packet);
-    accordionBody.appendChild(packetListItem);
+    let packetHex = createElement('small', 'user-select-all', packet);
+    let packetListItem = createElement('li', 'font-monospace', packetHex);
+    collapse.appendChild(packetListItem);
   });
 
-  accordion.setAttribute('id', 'packetsAccordion');
-  accordionButton.setAttribute('data-bs-toggle', 'collapse');
-  accordionButton.setAttribute('data-bs-target', '#packetsCollapse');
-  accordionCollapse.setAttribute('id', 'packetsCollapse');
-  accordionCollapse.setAttribute('data-bs-parent', '#packetsAccordion');
+  button.setAttribute('data-bs-toggle', 'collapse');
+  button.setAttribute('data-bs-target', '#packetsCollapse');
+  collapse.setAttribute('id', 'packetsCollapse');
 
-  accordionHeader.appendChild(accordionButton);
-  accordionCollapse.appendChild(accordionBody);
-  accordionItem.appendChild(accordionHeader);
-  accordionItem.appendChild(accordionCollapse);
-  accordion.appendChild(accordionItem);
+  content.appendChild(button);
+  content.appendChild(collapse);
 
-  return accordion;
+  return content;
 }
 
 
 // Prepare the event icons as a DocumentFragment
 function createEventElements(events) {
-  let elements = document.createDocumentFragment();
+  let elements = new DocumentFragment();
 
   events.forEach(function(event) {
     let space = document.createTextNode(' \u00a0');
@@ -376,15 +331,28 @@ function createAccordionItem(name, parentName, content) {
 
 
 // Create an element as specified
-function createElement(elementName, classNames, textContent) {
+function createElement(elementName, classNames, content) {
   let element = document.createElement(elementName);
 
   if(classNames) {
     element.setAttribute('class', classNames);
   }
 
-  if(textContent) {
-    element.textContent = textContent;
+  if((content instanceof Element) || (content instanceof DocumentFragment)) {
+    element.appendChild(content);
+  }
+  else if(Array.isArray(content)) {
+    content.forEach(function(item) {
+      if((item instanceof Element) || (item instanceof DocumentFragment)) {
+        element.appendChild(item);
+      }
+      else {
+        element.appendChild(document.createTextNode(item));
+      }
+    });
+  }
+  else {
+    element.textContent = content;
   }
 
   return element;
