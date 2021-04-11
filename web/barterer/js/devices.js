@@ -93,23 +93,18 @@ function updateDevices(devicesList) {
 function createDeviceCard(signature, device) {
   let isEmptyDevice = (Object.keys(device).length === 0);
   let deviceUrl = devicesUrl + '/' + signature;
-  let card = createElement('div', 'card mb-1');
-  let header = createElement('div', 'card-header bg-dark text-white lead');
   let headerIcon = createElement('i', 'fas fa-barcode');
   let headerText = createElement('span', 'font-monospace', ' ' + signature);
+  let header = createElement('div', 'card-header bg-dark text-white lead',
+                             [ headerIcon, headerText ]);
   let body = createElement('div', 'card-body');
-  let footer = createElement('small', 'card-footer');
   let footerIcon = createElement('i', 'fas fa-link text-muted');
-  let footerSpace = document.createTextNode(' ');
   let footerText = createElement('a', 'text-truncate', deviceUrl);
-  footerText.setAttribute('href', deviceUrl);
+  let footer = createElement('small', 'card-footer',
+                             [ footerIcon, ' ', footerText ]);
+  let card = createElement('div', 'card mb-1', header);
 
-  header.appendChild(headerIcon);
-  header.appendChild(headerText);
-  footer.appendChild(footerIcon);
-  footer.appendChild(footerSpace);
-  footer.appendChild(footerText);
-  card.appendChild(header);
+  footerText.setAttribute('href', deviceUrl);
 
   if(!isEmptyDevice) {
     let accordion = createDeviceAccordion(device);
@@ -190,59 +185,45 @@ function createRaddecContent(raddec) {
 
 // Create the dynamb visualisation
 function createDynambContent(dynamb) {
-  let content = new DocumentFragment();
   let table = createElement('table', 'table table-hover');
-  let caption = createElement('caption', 'caption-top');
-  let captionIcon = createElement('i', 'fas fa-clock');
   let tbody = createElement('tbody');
 
   for(const property in dynamb) {
     if(property === 'timestamp') {
       let localeTimestamp = new Date(dynamb['timestamp']).toLocaleTimeString();
-      let captionText = document.createTextNode(' \u00a0' + localeTimestamp);
-
-      caption.appendChild(captionIcon);
-      caption.appendChild(captionText);
+      let captionIcon = createElement('i', 'fas fa-clock');
+      let captionText = ' \u00a0' + localeTimestamp;
+      let caption = createElement('caption', 'caption-top',
+                                  [ captionIcon, captionText ]);
       table.appendChild(caption);
     }
     else {
-      let row = createElement('tr');
       let th = createElement('th', null, property);
-      let td = createElement('td', 'font-monospace', dynamb[property]);
-
-      row.appendChild(th);
-      row.appendChild(td);
+      let td = createElement('td', 'font-monospace',
+                             dynamb[property].toString());
+      let row = createElement('tr', null, [ th, td ]);
       tbody.appendChild(row);
     }
   }
 
   table.appendChild(tbody);
-  content.appendChild(table);
 
-  return content;
+  return table;
 }
 
 
 // Create the statid visualisation
 function createStatidContent(statid) {
-  let content = new DocumentFragment();
-  let table = createElement('table', 'table table-hover');
   let tbody = createElement('tbody');
 
   for(const property in statid) {
-    let row = createElement('tr');
     let th = createElement('th', null, property);
-    let td = createElement('td', 'font-monospace', statid[property]);
-
-    row.appendChild(th);
-    row.appendChild(td);
+    let td = createElement('td', 'font-monospace', statid[property].toString());
+    let row = createElement('tr', null, [ th, td ]);
     tbody.appendChild(row);
   }
 
-  table.appendChild(tbody);
-  content.appendChild(table);
-
-  return content;
+  return createElement('table', 'table table-hover', tbody);
 }
 
 
@@ -306,25 +287,22 @@ function createEventElements(events) {
 
 // Create an accordion item
 function createAccordionItem(name, parentName, content) {
-  let accordionItem = createElement('div', 'accordion-item');
-  let accordionHeader = createElement('h2', 'accordion-header');
-  let accordionButton = createElement('button', 'accordion-button', name);
-  let accordionCollapse = createElement('div',
-                                        'accordion-collapse collapse show');
-  let accordionBody = createElement('div', 'accordion-body');
   let accordionCollapseId = name + 'Collapse';
+  let accordionButton = createElement('button', 'accordion-button', name);
+  let accordionHeader = createElement('h2', 'accordion-header',
+                                      accordionButton);
+  let accordionBody = createElement('div', 'accordion-body', content);
+  let accordionCollapse = createElement('div',
+                                        'accordion-collapse collapse show',
+                                        accordionBody);
+  let accordionItem = createElement('div', 'accordion-item overflow-hidden',
+                                    [ accordionHeader, accordionCollapse ]);
 
   accordionButton.setAttribute('type', 'button');
   accordionButton.setAttribute('data-bs-toggle', 'collapse');
   accordionButton.setAttribute('data-bs-target', '#' + accordionCollapseId);
   accordionCollapse.setAttribute('id', accordionCollapseId);
   accordionCollapse.setAttribute('data-bs-parent', '#' + parentName);
-
-  accordionHeader.appendChild(accordionButton);
-  accordionBody.appendChild(content);
-  accordionCollapse.appendChild(accordionBody);
-  accordionItem.appendChild(accordionHeader);
-  accordionItem.appendChild(accordionCollapse);
 
   return accordionItem;
 }
