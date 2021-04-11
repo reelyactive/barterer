@@ -122,29 +122,19 @@
             <!-- Human-readable content pane -->
             <div class="tab-pane fade show active" id="humancontent"
                  role="tabpanel" aria-labelledby="humantab">
-              <table class="table table-bordered text-center mt-4">
-                <tbody>
-                  <tr>
-                    <th class="bg-dark text-white align-middle display-6">
-                      <i class="fas fa-barcode"></i>
-                    </th>
-                    <td class="lead align-middle" id="identifier"></td>
-                  </tr>
-                </tbody>
-              </table>
-              <p class="lead text-center" id="loading">
+              <p class="lead text-center mt-4" id="loading">
                 <span class="badge bg-primary">
                   <i class="fas fa-info-circle"></i>
                 </span>
                 &nbsp; GET /devices in progress...
               </p>
-              <p class="lead text-center" id="error" hidden>
+              <p class="lead text-center mt-4" id="error" hidden>
                 <span class="badge bg-danger">
                   <i class="fas fa-skull-crossbones"></i>
                 </span>
                 &nbsp; <span id="errorMessage"></span>
               </p>
-              <div id="devices" hidden>
+              <div id="devices" class="mt-4" hidden>
                 <!-- TODO -->
               </div>
             </div>
