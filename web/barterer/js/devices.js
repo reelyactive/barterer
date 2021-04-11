@@ -103,6 +103,14 @@ function createDeviceCard(signature, device) {
     let raddecCard = createRaddecCard(device.raddec);
     body.appendChild(raddecCard);
   }
+  if(device.hasOwnProperty('dynamb')) {
+    let dynambCard = createDynambCard(device.dynamb);
+    body.appendChild(dynambCard);
+  }
+  if(device.hasOwnProperty('statid')) {
+    let statidCard = createStatidCard(device.statid);
+    body.appendChild(statidCard);
+  }
 
   card.appendChild(header);
   card.appendChild(body);
@@ -113,7 +121,7 @@ function createDeviceCard(signature, device) {
 
 // Create the raddec card visualisation
 function createRaddecCard(raddec) {
-  let card = createElement('div', 'card');
+  let card = createElement('div', 'card my-2');
   let body = createElement('div', 'card-body');
   let raddecList = createRaddecList(raddec);
   let rssiSignatureTable = createRssiSignatureTable(raddec.rssiSignature);
@@ -126,6 +134,80 @@ function createRaddecCard(raddec) {
   body.appendChild(raddecList);
   body.appendChild(rssiSignatureTable);
   body.appendChild(packetsAccordion);
+  footer.appendChild(footerText);
+  card.appendChild(body);
+  card.appendChild(footer);
+
+  return card;
+}
+
+
+// Create the dynamb card visualisation
+function createDynambCard(dynamb) {
+  let card = createElement('div', 'card my-2');
+  let body = createElement('div', 'card-body');
+  let table = createElement('table', 'table table-hover');
+  let caption = createElement('caption', 'caption-top');
+  let captionIcon = createElement('i', 'fas fa-clock');
+  let tbody = createElement('tbody');
+  let footer = createElement('div', 'card-footer');
+  let footerText = createElement('small', 'text-muted');
+
+  footerText.textContent = 'dynamb';
+
+  for(const property in dynamb) {
+    if(property === 'timestamp') {
+      let localeTimestamp = new Date(dynamb['timestamp']).toLocaleTimeString();
+      let captionText = document.createTextNode(' \u00a0' + localeTimestamp);
+
+      caption.appendChild(captionIcon);
+      caption.appendChild(captionText);
+      table.appendChild(caption);
+    }
+    else {
+      let row = createElement('tr');
+      let th = createElement('th', null, property);
+      let td = createElement('td', 'font-monospace', dynamb[property]);
+
+      row.appendChild(th);
+      row.appendChild(td);
+      tbody.appendChild(row);
+    }
+  }
+
+  table.appendChild(tbody);
+  body.appendChild(table);
+  footer.appendChild(footerText);
+  card.appendChild(body);
+  card.appendChild(footer);
+
+  return card;
+}
+
+
+// Create the statid card visualisation
+function createStatidCard(statid) {
+  let card = createElement('div', 'card my-2');
+  let body = createElement('div', 'card-body');
+  let table = createElement('table', 'table table-hover');
+  let tbody = createElement('tbody');
+  let footer = createElement('div', 'card-footer');
+  let footerText = createElement('small', 'text-muted');
+
+  footerText.textContent = 'statid';
+
+  for(const property in statid) {
+    let row = createElement('tr');
+    let th = createElement('th', null, property);
+    let td = createElement('td', 'font-monospace', statid[property]);
+
+    row.appendChild(th);
+    row.appendChild(td);
+    tbody.appendChild(row);
+  }
+
+  table.appendChild(tbody);
+  body.appendChild(table);
   footer.appendChild(footerText);
   card.appendChild(body);
   card.appendChild(footer);
