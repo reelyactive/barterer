@@ -104,67 +104,73 @@ function createDeviceCard(signature, device) {
   let footerText = createElement('a', 'text-truncate', deviceUrl);
   footerText.setAttribute('href', deviceUrl);
 
-  if(device.hasOwnProperty('raddec')) {
-    let raddecCard = createRaddecCard(device.raddec);
-    body.appendChild(raddecCard);
-  }
-  if(device.hasOwnProperty('dynamb')) {
-    let dynambCard = createDynambCard(device.dynamb);
-    body.appendChild(dynambCard);
-  }
-  if(device.hasOwnProperty('statid')) {
-    let statidCard = createStatidCard(device.statid);
-    body.appendChild(statidCard);
-  }
-
   header.appendChild(headerIcon);
   header.appendChild(headerText);
   footer.appendChild(footerIcon);
   footer.appendChild(footerSpace);
   footer.appendChild(footerText);
   card.appendChild(header);
-  if(!isEmptyDevice) { card.appendChild(body); }
+
+  if(!isEmptyDevice) {
+    let accordion = createDeviceAccordion(device);
+    body.appendChild(accordion);
+    card.appendChild(body);
+  }
+
   card.appendChild(footer);
 
   return card;
 }
 
 
-// Create the raddec card visualisation
-function createRaddecCard(raddec) {
-  let card = createElement('div', 'card my-2');
-  let body = createElement('div', 'card-body');
+// Create the device accordion visualisation
+function createDeviceAccordion(device) {
+  let accordionId = 'deviceAccordion';
+  let accordion = createElement('div', 'accordion accordion-flush');
+  accordion.setAttribute('id', accordionId);
+
+  if(device.hasOwnProperty('raddec')) {
+    let raddecContent = createRaddecContent(device.raddec);
+    let raddecItem = createAccordionItem('raddec', accordionId, raddecContent);
+    accordion.appendChild(raddecItem);
+  }
+  if(device.hasOwnProperty('dynamb')) {
+    let dynambContent = createDynambContent(device.dynamb);
+    let dynambItem = createAccordionItem('dynamb', accordionId, dynambContent);
+    accordion.appendChild(dynambItem);
+  }
+  if(device.hasOwnProperty('statid')) {
+    let statidContent = createStatidContent(device.statid);
+    let statidItem = createAccordionItem('statid', accordionId, statidContent);
+    accordion.appendChild(statidItem);
+  }
+
+  return accordion;
+}
+
+
+// Create the raddec visualisation
+function createRaddecContent(raddec) {
+  let content = new DocumentFragment();
   let raddecList = createRaddecList(raddec);
   let rssiSignatureTable = createRssiSignatureTable(raddec.rssiSignature);
   let packetsAccordion = createPacketsAccordion(raddec.packets);
-  let footer = createElement('div', 'card-footer');
-  let footerText = createElement('small', 'text-muted');
 
-  footerText.textContent = 'raddec';
+  content.appendChild(raddecList);
+  content.appendChild(rssiSignatureTable);
+  content.appendChild(packetsAccordion);
 
-  body.appendChild(raddecList);
-  body.appendChild(rssiSignatureTable);
-  body.appendChild(packetsAccordion);
-  footer.appendChild(footerText);
-  card.appendChild(body);
-  card.appendChild(footer);
-
-  return card;
+  return content;
 }
 
 
-// Create the dynamb card visualisation
-function createDynambCard(dynamb) {
-  let card = createElement('div', 'card my-2');
-  let body = createElement('div', 'card-body');
+// Create the dynamb visualisation
+function createDynambContent(dynamb) {
+  let content = new DocumentFragment();
   let table = createElement('table', 'table table-hover');
   let caption = createElement('caption', 'caption-top');
   let captionIcon = createElement('i', 'fas fa-clock');
   let tbody = createElement('tbody');
-  let footer = createElement('div', 'card-footer');
-  let footerText = createElement('small', 'text-muted');
-
-  footerText.textContent = 'dynamb';
 
   for(const property in dynamb) {
     if(property === 'timestamp') {
@@ -187,25 +193,17 @@ function createDynambCard(dynamb) {
   }
 
   table.appendChild(tbody);
-  body.appendChild(table);
-  footer.appendChild(footerText);
-  card.appendChild(body);
-  card.appendChild(footer);
+  content.appendChild(table);
 
-  return card;
+  return content;
 }
 
 
-// Create the statid card visualisation
-function createStatidCard(statid) {
-  let card = createElement('div', 'card my-2');
-  let body = createElement('div', 'card-body');
+// Create the statid visualisation
+function createStatidContent(statid) {
+  let content = new DocumentFragment();
   let table = createElement('table', 'table table-hover');
   let tbody = createElement('tbody');
-  let footer = createElement('div', 'card-footer');
-  let footerText = createElement('small', 'text-muted');
-
-  footerText.textContent = 'statid';
 
   for(const property in statid) {
     let row = createElement('tr');
@@ -218,12 +216,9 @@ function createStatidCard(statid) {
   }
 
   table.appendChild(tbody);
-  body.appendChild(table);
-  footer.appendChild(footerText);
-  card.appendChild(body);
-  card.appendChild(footer);
+  content.appendChild(table);
 
-  return card;
+  return content;
 }
 
 
@@ -351,6 +346,32 @@ function createEventElements(events) {
   });
 
   return elements;
+}
+
+
+// Create an accordion item
+function createAccordionItem(name, parentName, content) {
+  let accordionItem = createElement('div', 'accordion-item');
+  let accordionHeader = createElement('h2', 'accordion-header');
+  let accordionButton = createElement('button', 'accordion-button', name);
+  let accordionCollapse = createElement('div',
+                                        'accordion-collapse collapse show');
+  let accordionBody = createElement('div', 'accordion-body');
+  let accordionCollapseId = name + 'Collapse';
+
+  accordionButton.setAttribute('type', 'button');
+  accordionButton.setAttribute('data-bs-toggle', 'collapse');
+  accordionButton.setAttribute('data-bs-target', '#' + accordionCollapseId);
+  accordionCollapse.setAttribute('id', accordionCollapseId);
+  accordionCollapse.setAttribute('data-bs-parent', '#' + parentName);
+
+  accordionHeader.appendChild(accordionButton);
+  accordionBody.appendChild(content);
+  accordionCollapse.appendChild(accordionBody);
+  accordionItem.appendChild(accordionHeader);
+  accordionItem.appendChild(accordionCollapse);
+
+  return accordionItem;
 }
 
 
