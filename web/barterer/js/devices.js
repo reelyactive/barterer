@@ -11,6 +11,7 @@ const STATUS_BAD_REQUEST = 400;
 const STATUS_NOT_FOUND = 404;
 const MESSAGE_BAD_REQUEST = 'Bad Request [400].  An error likely occurred on the server.';
 const MESSAGE_NOT_FOUND = 'Device Not Found [404].';
+const POLLING_INTERVAL_MILLISECONDS = 10000;
 const DEVICES_ROUTE = '/devices';
 const SIGNATURE_SEPARATOR = '/';
 const IDENTIFIER_TYPES = [
@@ -29,6 +30,10 @@ const EVENT_ICONS = [
 
 
 // DOM elements
+let connection = document.querySelector('#connection');
+let noUpdates = document.querySelector('#settingsNoUpdates');
+let realTimeUpdates = document.querySelector('#settingsRealTimeUpdates');
+let periodicUpdates = document.querySelector('#settingsPeriodicUpdates');
 let jsonResponse = document.querySelector('#jsonResponse');
 let loading = document.querySelector('#loading');
 let error = document.querySelector('#error');
@@ -40,26 +45,56 @@ let devices = document.querySelector('#devices');
 let queryUrl = window.location.href;
 let devicesUrl = window.location.protocol + '//' + window.location.hostname +
                  ':' + window.location.port + DEVICES_ROUTE;
+let isPollPending = false;
+let pollingInterval;
+let socket;
 
 
-// Initialisation: GET the associations and display in DOM
-getDevices(queryUrl, function(status, response) {
-  jsonResponse.textContent = JSON.stringify(response, null, 2);
-  loading.hidden = true;
+// Monitor each settings radio button
+noUpdates.onchange = updateUpdates;
+realTimeUpdates.onchange = updateUpdates;
+periodicUpdates.onchange = updateUpdates;
 
-  if(status === STATUS_OK) {
-    updateDevices(response.devices);
-    devices.hidden = false;
+
+// Initialisation: poll the devices once and display the result
+pollAndDisplay();
+
+
+// GET the devices and display in DOM
+function pollAndDisplay() {
+  if(!isPollPending) {
+    isPollPending = true;
+    loading.hidden = false;
+    error.hidden = true;
+    devices.hidden = true;
+
+    getDevices(queryUrl, function(status, response) {
+      jsonResponse.textContent = JSON.stringify(response, null, 2);
+      loading.hidden = true;
+      isPollPending = false;
+
+      if(status === STATUS_OK) {
+        let isSpecificDevice = (window.location.pathname.length >
+                                DEVICES_ROUTE.length + 1);
+        updateDevices(response.devices);
+        devices.hidden = false;
+
+        if(isSpecificDevice) {
+          realTimeUpdates.disabled = false;
+          periodicUpdates.disabled = false;
+        }
+      }
+      else if(status === STATUS_BAD_REQUEST) {
+        errorMessage.textContent = MESSAGE_BAD_REQUEST;
+        error.hidden = false;
+      }
+      else if(status === STATUS_NOT_FOUND) {
+        errorMessage.textContent = MESSAGE_NOT_FOUND;
+        error.hidden = false;
+      }
+    });
   }
-  else if(status === STATUS_BAD_REQUEST) {
-    errorMessage.textContent = MESSAGE_BAD_REQUEST;
-    error.hidden = false;
-  }
-  else if(status === STATUS_NOT_FOUND) {
-    errorMessage.textContent = MESSAGE_NOT_FOUND;
-    error.hidden = false;
-  }
-});
+}
 
 
 // GET the associations
@@ -81,11 +116,15 @@ function getDevices(url, callback) {
 
 // Update the devices in the DOM
 function updateDevices(devicesList) {
+  let content = new DocumentFragment();
+
   for(const deviceSignature in devicesList) {
     let device = devicesList[deviceSignature];
     let deviceCard = createDeviceCard(deviceSignature, device);
-    devices.appendChild(deviceCard);
+    content.appendChild(deviceCard);
   }
+
+  devices.replaceChildren(content);
 }
 
 
@@ -334,4 +373,55 @@ function createElement(elementName, classNames, content) {
   }
 
   return element;
+}
+
+
+// Create and manage a socket.io connection
+function createSocket() {
+  socket = io(window.location.pathname);
+
+  socket.on('connect', function() {
+    connection.replaceChildren(createElement('i', 'fas fa-cloud text-success'));
+  });
+
+  socket.on('raddec', function(raddec) {
+    console.log(raddec);
+    // TODO: update raddec
+  });
+
+  socket.on('dynamb', function(dynamb) {
+    console.log(dynamb);
+    // TODO: update dynamb
+  });
+
+  socket.on('connect_error', function() {
+    connection.replaceChildren(createElement('i', 'fas fa-cloud text-danger'));
+  });
+
+  socket.on('disconnect', function() {
+    connection.replaceChildren(createElement('i', 'fas fa-cloud text-warning'));
+  });
+}
+
+
+// Update the update method
+function updateUpdates(event) {
+  if(noUpdates.checked) {
+    connection.hidden = true;
+    if(socket) { socket.disconnect(); }
+    clearInterval(pollingInterval);
+  }
+
+  if(realTimeUpdates.checked) { 
+    connection.hidden = false;
+    clearInterval(pollingInterval);
+    createSocket();
+  }
+
+  if(periodicUpdates.checked) {
+    connection.hidden = true;
+    if(socket) { socket.disconnect(); }
+    pollingInterval = setInterval(pollAndDisplay,
+                                  POLLING_INTERVAL_MILLISECONDS);
+  }
 }
