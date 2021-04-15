@@ -47,6 +47,7 @@ let devicesUrl = window.location.protocol + '//' + window.location.hostname +
                  ':' + window.location.port + DEVICES_ROUTE;
 let isPollPending = false;
 let pollingInterval;
+let machineReadableData;
 let socket;
 
 
@@ -69,7 +70,8 @@ function pollAndDisplay() {
     devices.hidden = true;
 
     getDevices(queryUrl, function(status, response) {
-      jsonResponse.textContent = JSON.stringify(response, null, 2);
+      machineReadableData = response;
+      jsonResponse.textContent = JSON.stringify(machineReadableData, null, 2);
       loading.hidden = true;
       isPollPending = false;
 
@@ -81,7 +83,6 @@ function pollAndDisplay() {
 
         if(isSpecificDevice) {
           realTimeUpdates.disabled = false;
-          periodicUpdates.disabled = false;
         }
       }
       else if(status === STATUS_BAD_REQUEST) {
@@ -165,12 +166,14 @@ function createDeviceAccordion(device) {
 
   if(device.hasOwnProperty('raddec')) {
     let raddecContent = createRaddecContent(device.raddec);
-    let raddecItem = createAccordionItem('raddec', accordionId, raddecContent);
+    let raddecItem = createAccordionItem('raddec', accordionId, raddecContent,
+                                         'raddeccontainer');
     accordion.appendChild(raddecItem);
   }
   if(device.hasOwnProperty('dynamb')) {
     let dynambContent = createDynambContent(device.dynamb);
-    let dynambItem = createAccordionItem('dynamb', accordionId, dynambContent);
+    let dynambItem = createAccordionItem('dynamb', accordionId, dynambContent,
+                                         'dynambcontainer');
     accordion.appendChild(dynambItem);
   }
   if(device.hasOwnProperty('statid')) {
@@ -325,7 +328,7 @@ function createEventElements(events) {
 
 
 // Create an accordion item
-function createAccordionItem(name, parentName, content) {
+function createAccordionItem(name, parentName, content, contentId) {
   let accordionCollapseId = name + 'Collapse';
   let accordionButton = createElement('button', 'accordion-button', name);
   let accordionHeader = createElement('h2', 'accordion-header',
@@ -342,6 +345,10 @@ function createAccordionItem(name, parentName, content) {
   accordionButton.setAttribute('data-bs-target', '#' + accordionCollapseId);
   accordionCollapse.setAttribute('id', accordionCollapseId);
   accordionCollapse.setAttribute('data-bs-parent', '#' + parentName);
+
+  if(contentId) {
+    accordionBody.setAttribute('id', contentId);
+  }
 
   return accordionItem;
 }
@@ -385,13 +392,25 @@ function createSocket() {
   });
 
   socket.on('raddec', function(raddec) {
-    console.log(raddec);
-    // TODO: update raddec
+    let raddecContent = createRaddecContent(raddec);
+    let raddecContainer = document.querySelector('#raddeccontainer');
+    let signature = raddec.transmitterId + SIGNATURE_SEPARATOR +
+                    raddec.transmitterIdType;
+    machineReadableData.devices[signature].raddec = raddec;
+    jsonResponse.textContent = JSON.stringify(machineReadableData, null, 2);
+
+    raddecContainer.replaceChildren(raddecContent);
   });
 
   socket.on('dynamb', function(dynamb) {
-    console.log(dynamb);
-    // TODO: update dynamb
+    let dynambContent = createDynambContent(dynamb);
+    let dynambContainer = document.querySelector('#dynambcontainer');
+    let signature = dynamb.deviceId + SIGNATURE_SEPARATOR +
+                    dynamb.deviceIdType;
+    machineReadableData.devices[signature].dynamb = dynamb;
+    jsonResponse.textContent = JSON.stringify(machineReadableData, null, 2);
+
+    dynambContainer.replaceChildren(dynambContent);
   });
 
   socket.on('connect_error', function() {
@@ -421,6 +440,7 @@ function updateUpdates(event) {
   if(periodicUpdates.checked) {
     connection.hidden = true;
     if(socket) { socket.disconnect(); }
+    pollAndDisplay();
     pollingInterval = setInterval(pollAndDisplay,
                                   POLLING_INTERVAL_MILLISECONDS);
   }
