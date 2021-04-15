@@ -166,19 +166,29 @@ function createDeviceAccordion(device) {
 
   if(device.hasOwnProperty('raddec')) {
     let raddecContent = createRaddecContent(device.raddec);
-    let raddecItem = createAccordionItem('raddec', accordionId, raddecContent,
-                                         'raddeccontainer');
+    let raddecIcon = createElement('i', 'fas fa-satellite-dish');
+    let raddecTitle = createElement('span', null,
+                                    [ raddecIcon, '\u00a0 raddec' ]);
+    let raddecItem = createAccordionItem(raddecTitle, accordionId,
+                                         raddecContent, 'raddeccontainer');
     accordion.appendChild(raddecItem);
   }
   if(device.hasOwnProperty('dynamb')) {
     let dynambContent = createDynambContent(device.dynamb);
-    let dynambItem = createAccordionItem('dynamb', accordionId, dynambContent,
-                                         'dynambcontainer');
+    let dynambIcon = createElement('i', 'fas fa-tachometer-alt');
+    let dynambTitle = createElement('span', null,
+                                    [ dynambIcon, '\u00a0 dynamb' ]);
+    let dynambItem = createAccordionItem(dynambTitle, accordionId,
+                                         dynambContent, 'dynambcontainer');
     accordion.appendChild(dynambItem);
   }
   if(device.hasOwnProperty('statid')) {
     let statidContent = createStatidContent(device.statid);
-    let statidItem = createAccordionItem('statid', accordionId, statidContent);
+    let statidIcon = createElement('i', 'fas fa-id-card');
+    let statidTitle = createElement('span', null,
+                                    [ statidIcon, '\u00a0 statid' ]);
+    let statidItem = createAccordionItem(statidTitle, accordionId,
+                                         statidContent);
     accordion.appendChild(statidItem);
   }
 
@@ -375,8 +385,8 @@ function createElement(elementName, classNames, content) {
       }
     });
   }
-  else {
-    element.textContent = content;
+  else if(content) {
+    element.appendChild(document.createTextNode(content));
   }
 
   return element;
