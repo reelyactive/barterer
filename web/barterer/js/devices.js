@@ -169,7 +169,7 @@ function createDeviceAccordion(device) {
     let raddecIcon = createElement('i', 'fas fa-satellite-dish');
     let raddecTitle = createElement('span', null,
                                     [ raddecIcon, '\u00a0 raddec' ]);
-    let raddecItem = createAccordionItem(raddecTitle, accordionId,
+    let raddecItem = createAccordionItem('raddec', accordionId, raddecTitle,
                                          raddecContent, 'raddeccontainer');
     accordion.appendChild(raddecItem);
   }
@@ -178,7 +178,7 @@ function createDeviceAccordion(device) {
     let dynambIcon = createElement('i', 'fas fa-tachometer-alt');
     let dynambTitle = createElement('span', null,
                                     [ dynambIcon, '\u00a0 dynamb' ]);
-    let dynambItem = createAccordionItem(dynambTitle, accordionId,
+    let dynambItem = createAccordionItem('dynamb', accordionId, dynambTitle,
                                          dynambContent, 'dynambcontainer');
     accordion.appendChild(dynambItem);
   }
@@ -187,7 +187,7 @@ function createDeviceAccordion(device) {
     let statidIcon = createElement('i', 'fas fa-id-card');
     let statidTitle = createElement('span', null,
                                     [ statidIcon, '\u00a0 statid' ]);
-    let statidItem = createAccordionItem(statidTitle, accordionId,
+    let statidItem = createAccordionItem('statid', accordionId, statidTitle,
                                          statidContent);
     accordion.appendChild(statidItem);
   }
@@ -338,9 +338,9 @@ function createEventElements(events) {
 
 
 // Create an accordion item
-function createAccordionItem(name, parentName, content, contentId) {
+function createAccordionItem(name, parentName, title, content, contentId) {
   let accordionCollapseId = name + 'Collapse';
-  let accordionButton = createElement('button', 'accordion-button', name);
+  let accordionButton = createElement('button', 'accordion-button', title);
   let accordionHeader = createElement('h2', 'accordion-header',
                                       accordionButton);
   let accordionBody = createElement('div', 'accordion-body', content);
