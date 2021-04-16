@@ -174,7 +174,7 @@ function createDeviceAccordion(device) {
     accordion.appendChild(raddecItem);
   }
   if(device.hasOwnProperty('dynamb')) {
-    let dynambContent = createDynambContent(device.dynamb);
+    let dynambContent = cuttlefishDynamb.render(device.dynamb);
     let dynambIcon = createElement('i', 'fas fa-tachometer-alt');
     let dynambTitle = createElement('span', null,
                                     [ dynambIcon, '\u00a0 dynamb' ]);
@@ -202,7 +202,7 @@ function createRaddecContent(raddec) {
   let deviceHeader = createElement('th', 'bg-ambient text-white text-center',
                                    deviceIcon);
   let deviceId = raddec.transmitterId + ' / ' +
-                 IDENTIFIER_TYPES[raddec.transmitterIdType]
+                 IDENTIFIER_TYPES[raddec.transmitterIdType];
   let deviceText = createElement('td', 'font-monospace', deviceId);
   let deviceRow = createElement('tr', null, [ deviceHeader, deviceText ]);
   let eventIcon = createElement('i', 'fas fa-exchange-alt');
@@ -230,35 +230,6 @@ function createRaddecContent(raddec) {
   let tbody = createElement('tbody', null, [ deviceRow, eventRow, receiverRow,
                                              packetsRow ]);
   let table = createElement('table', 'table', tbody);
-
-  return table;
-}
-
-
-// Create the dynamb visualisation
-function createDynambContent(dynamb) {
-  let table = createElement('table', 'table table-hover');
-  let tbody = createElement('tbody');
-
-  for(const property in dynamb) {
-    if(property === 'timestamp') {
-      let localeTimestamp = new Date(dynamb['timestamp']).toLocaleTimeString();
-      let captionIcon = createElement('i', 'fas fa-clock');
-      let captionText = ' \u00a0' + localeTimestamp;
-      let caption = createElement('caption', 'caption-top',
-                                  [ captionIcon, captionText ]);
-      table.appendChild(caption);
-    }
-    else {
-      let th = createElement('th', null, property);
-      let td = createElement('td', 'font-monospace',
-                             dynamb[property].toString());
-      let row = createElement('tr', null, [ th, td ]);
-      tbody.appendChild(row);
-    }
-  }
-
-  table.appendChild(tbody);
 
   return table;
 }
@@ -413,7 +384,7 @@ function createSocket() {
   });
 
   socket.on('dynamb', function(dynamb) {
-    let dynambContent = createDynambContent(dynamb);
+    let dynambContent = cuttlefishDynamb.render(dynamb);
     let dynambContainer = document.querySelector('#dynambcontainer');
     let signature = dynamb.deviceId + SIGNATURE_SEPARATOR +
                     dynamb.deviceIdType;
