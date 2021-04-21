@@ -24,6 +24,8 @@ let cuttlefishDynamb = (function() {
       batteryVoltage: { icon: "fas fa-battery-half", suffix: " V",
                         transform: "toFixed(2)" },
       deviceId: { icon: "fas fa-wifi", suffix: "", transform: "text" },
+      nearest: { icon: "fas fa-people-arrows", suffix: "",
+                 transform: "tableNearest" },
       relativeHumidity: { icon: "fas fa-water", suffix: " %",
                           transform: "progressPercentage" },
       temperature: { icon: "fas fa-thermometer-half", suffix: " \u2103",
@@ -35,7 +37,7 @@ let cuttlefishDynamb = (function() {
   // Render a dynamb
   function render(dynamb, target, options) {
     let tbody = createElement('tbody');
-    let table = createElement('table', 'table table-hover', tbody);
+    let table = createElement('table', 'table', tbody);
 
     if(dynamb.hasOwnProperty('timestamp')) {
       let localeTimestamp = new Date(dynamb['timestamp']).toLocaleTimeString();
@@ -101,6 +103,8 @@ let cuttlefishDynamb = (function() {
         return renderProgressXYZ(data, suffix);
       case 'toFixed(2)':
         return data.toFixed(2) + suffix;
+      case 'tableNearest':
+        return renderTableNearest(data);
       default:
         return data.toString() + suffix;
     }
@@ -146,6 +150,32 @@ let cuttlefishDynamb = (function() {
     magnitude = Math.sqrt(magnitude).toFixed(2);
     let caption = createElement('caption', null, magnitude + suffix);
     table.appendChild(caption);
+
+    return table;
+  }
+
+  // Render a nearest array in tabular format
+  function renderTableNearest(data) {
+    let tbody = createElement('tbody', 'align-middle font-monospace');
+    let table = createElement('table',
+                              'table table-hover table-borderless mb-0', tbody);
+
+    data.forEach(function(entry, index) {
+      let tdInstance = createElement('td', null, entry.deviceId);
+      let tdValue;
+
+      if(entry.hasOwnProperty('rssi')) {
+        tdValue = createElement('td', null, entry.rssi + ' dBm');
+      }
+      else if(entry.hasOwnProperty('interactionCount')) {
+        tdValue = createElement('td', null,
+                                entry.interactionCount + ' interactions');
+      }
+
+      let trClass = (index === 0) ? 'table-success' : null;
+      let tr = createElement('tr', trClass, [ tdInstance, tdValue ]);
+      tbody.appendChild(tr);
+    });
 
     return table;
   }
