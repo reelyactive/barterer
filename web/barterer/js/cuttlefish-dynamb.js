@@ -24,7 +24,9 @@ let cuttlefishDynamb = (function() {
       batteryVoltage: { icon: "fas fa-battery-half", suffix: " V",
                         transform: "toFixed(2)" },
       deviceId: { icon: "fas fa-wifi", suffix: "", transform: "text" },
-      nearest: { icon: "fas fa-people-arrows", suffix: "",
+      interactionDigest: { icon: "fas fa-history", suffix: "interactions",
+                           transform: "tableDigest" },
+      nearest: { icon: "fas fa-people-arrows", suffix: "dBm",
                  transform: "tableNearest" },
       relativeHumidity: { icon: "fas fa-water", suffix: " %",
                           transform: "progressPercentage" },
@@ -104,7 +106,10 @@ let cuttlefishDynamb = (function() {
       case 'toFixed(2)':
         return data.toFixed(2) + suffix;
       case 'tableNearest':
-        return renderTableNearest(data);
+        return renderTableDevices(data, 'rssi', suffix);
+      case 'tableDigest':
+        return renderTableDevices(data.interactions, 'count', suffix,
+                                  data.timestamp);
       default:
         return data.toString() + suffix;
     }
@@ -154,28 +159,36 @@ let cuttlefishDynamb = (function() {
     return table;
   }
 
-  // Render a nearest array in tabular format
-  function renderTableNearest(data) {
+  // Render a device array in tabular format
+  function renderTableDevices(data, property, suffix, timestamp) {
     let tbody = createElement('tbody', 'align-middle font-monospace');
     let table = createElement('table',
                               'table table-hover table-borderless mb-0', tbody);
 
     data.forEach(function(entry, index) {
       let tdInstance = createElement('td', null, entry.deviceId);
-      let tdValue;
-
-      if(entry.hasOwnProperty('rssi')) {
-        tdValue = createElement('td', null, entry.rssi + ' dBm');
-      }
-      else if(entry.hasOwnProperty('interactionCount')) {
-        tdValue = createElement('td', null,
-                                entry.interactionCount + ' interactions');
-      }
-
+      let tdValue = createElement('td', null, entry[property] + ' ' + suffix);
       let trClass = (index === 0) ? 'table-success' : null;
       let tr = createElement('tr', trClass, [ tdInstance, tdValue ]);
+
       tbody.appendChild(tr);
     });
+
+    if(timestamp) {
+      let captionTime = new Date(timestamp).toLocaleTimeString();
+      let captionIcon = createElement('i', 'fas fa-clock');
+      let isUptime = (timestamp < (Date.now() / 10000));
+      if(isUptime) {
+        let hours = Math.floor(timestamp / 3600);
+        let minutes = Math.floor((timestamp % 3600) / 60);
+        let seconds = (timestamp % 3600) % 60;
+        captionTime = '\u00a0 ' + hours + 'h ' + minutes + 'm ' + seconds + 's';
+        captionIcon = createElement('i', 'fas fa-stopwatch');
+      }
+      let caption = createElement('caption', null,
+                                  [ captionIcon, captionTime ]);
+      table.appendChild(caption);
+    }
 
     return table;
   }
