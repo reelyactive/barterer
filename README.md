@@ -144,13 +144,18 @@ If we stretch the story even further, the initials of Pisaster Ochraceus (PO) ar
 Why is the starfish holding scales with a one and a zero?  Because he's bartering digital information of course!
 
 
-What's next?
+Contributing
 ------------
 
-If you're developing with __barterer__ check out:
-* [diyActive](https://reelyactive.github.io/) our developer page
-* our [node-style-guide](https://github.com/reelyactive/node-style-guide) and [web-style-guide](https://github.com/reelyactive/web-style-guide) for development
-* our [contact information](https://www.reelyactive.com/contact/) to get in touch if you'd like to contribute
+Discover [how to contribute](CONTRIBUTING.md) to this open source project which upholds a standard [code of conduct](CODE_OF_CONDUCT.md).
+
+
+Security
+--------
+
+Consult our [security policy](SECURITY.md) for best practices using this open source software and to report vulnerabilities.
+
+[![Known Vulnerabilities](https://snyk.io/test/github/reelyactive/barterer/badge.svg)](https://snyk.io/test/github/reelyactive/barterer)
 
 
 License
