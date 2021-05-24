@@ -15,11 +15,118 @@ Installation
 
 
 Hello barterer!
-----------------
+---------------
 
     npm start
 
 Browse to [localhost:3001/devices/001bc50940810000/1](http://localhost:3001/devices/001bc50940810000/1) to see if there are any associations for the device with EUI-64 identifier 00-1b-c5-09-40-81-00-00.  By default, this should return Not Found.
+
+
+REST API
+--------
+
+### GET /devices
+
+Retrieve all active devices.
+
+#### Example request
+
+| Method | Route    | Content-Type     |
+|:-------|:---------|:-----------------|
+| GET    | /devices | application/json |
+
+#### Example response
+
+    {
+      "_meta": {
+        "message": "ok",
+        "statusCode": 200
+      },
+      "_links": {
+        "self": {
+          "href": "http://localhost:3001/devices"
+        }
+      },
+      "devices": {
+        "fee150bada55/2": {},
+        "001bc50940810000/1": {},
+        "001bc50940820000/1": {}
+      }
+    }
+
+
+### GET /devices/{id}/{type}
+
+Retrieve the active device with the given _id_ and _type_.
+
+#### Example request
+
+| Method | Route                   | Content-Type     |
+|:-------|:------------------------|:-----------------|
+| GET    | /devices/fee150bada55/2 | application/json |
+
+#### Example response
+
+    {
+      "_meta": {
+        "message": "ok",
+        "statusCode": 200
+      },
+      "_links": {
+        "self": {
+          "href": "http://localhost:3001/devices/fee150bada55/2"
+        }
+      },
+      "devices": {
+        "fee150bada55/2": {
+          "raddec": {
+            "transmitterId": "fee150bada55",
+            "transmitterIdType": 2,
+            "rssiSignature": [
+              {
+                "receiverId": "001bc50940820000",
+                "receiverIdType": 1,
+                "rssi": -71,
+                "numberOfDecodings": 2
+              },
+              {
+                "receiverId": "001bc50940810000",
+                "receiverIdType": 1,
+                "rssi": -84,
+                "numberOfDecodings": 2
+              }
+            ],
+            "packets": [
+               "(as hexadecimal strings)"
+            ],
+            "timestamp": 1621865950453,
+            "events": [
+              2
+            ]
+          },
+          "dynamb": {
+            "timestamp": 1621865950453,
+            "batteryPercentage": 100,
+            "acceleration": [
+              -0.46875,
+              -0.76953125,
+              0.3984375
+            ]
+          },
+          "statid": {
+            "uuids": [
+              "ffe1",
+              "feaa"
+            ],
+            "uri": "https://sniffypedia.org/Product/Google_Eddystone/",
+            "deviceIds": [
+              "7265656c652055554944/fee150bada55"
+            ],
+            "name": "NAME"
+          }
+        }
+      }
+    }
 
 
 ![barterer logo](https://reelyactive.github.io/barterer/images/barterer-bubble.png)
