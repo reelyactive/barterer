@@ -79,6 +79,7 @@ let queryUrl = window.location.href;
 let devicesUrl = window.location.protocol + '//' + window.location.hostname +
                  ':' + window.location.port + DEVICES_ROUTE;
 let isPollPending = false;
+let isHyperlocalContextSelected = false;
 let pollingInterval;
 let machineReadableData;
 let socket;
@@ -93,9 +94,9 @@ periodicUpdates.onchange = updateUpdates;
 
 
 // Render/remove the hyperlocal context graph upon tab selection
-humanTab.onclick = removeHyperlocalContext;
-hlcTab.onclick = renderHyperlocalContext;
-machineTab.onclick = removeHyperlocalContext;
+humanTab.onclick = unselectHyperlocalContext;
+hlcTab.onclick = selectHyperlocalContext;
+machineTab.onclick = unselectHyperlocalContext;
 
 
 // Initialisation: poll the devices once and display the result
@@ -124,6 +125,9 @@ function pollAndDisplay() {
 
         if(isSpecificDevice) {
           realTimeUpdates.disabled = false;
+        }
+        if(isHyperlocalContextSelected) {
+          renderHyperlocalContext();
         }
       }
       else if(status === STATUS_BAD_REQUEST) {
@@ -422,6 +426,10 @@ function createSocket() {
     jsonResponse.textContent = JSON.stringify(machineReadableData, null, 2);
 
     raddecContainer.replaceChildren(raddecContent);
+
+    if(isHyperlocalContextSelected) {
+      renderHyperlocalContext();
+    }
   });
 
   socket.on('dynamb', function(dynamb) {
@@ -497,21 +505,31 @@ function addDeviceNode(deviceSignature, device) {
 }
 
 
-// Remove the hyperlocal context graph
-function removeHyperlocalContext() {
+// Unselect the hyperlocal context graph tab
+function unselectHyperlocalContext() {
+  isHyperlocalContextSelected = false;
+
   let container = document.getElementById('cy-container');
 
   container.setAttribute('style', 'height: 0px');
 }
 
 
-// Render the hyperlocal context graph
-function renderHyperlocalContext() {
+// Select the hyperlocal context graph tab
+function selectHyperlocalContext() {
+  isHyperlocalContextSelected = true;
+
   let container = document.getElementById('cy-container');
   let height = Math.max(window.innerHeight - HLC_UNUSABLE_HEIGHT_PX,
                         HLC_MIN_HEIGHT_PX) + 'px';
   container.setAttribute('style', 'height:' + height);
 
+  renderHyperlocalContext();
+}
+
+
+// Render the hyperlocal context graph
+function renderHyperlocalContext() {
   let options = {
       container: document.getElementById('cy'),
       layout: GRID_LAYOUT_OPTIONS,
