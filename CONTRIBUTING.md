@@ -39,7 +39,7 @@ We invite _veteran_ contributors to __create a pull request__ on the appropriate
 
 
 Financial support
------------------under a Creative Commons Attribution 4.0 International License
+-----------------
 
 Open source development of this and other reelyActive software packages is supported primarily by [annual subscriptions](https://www.reelyactive.com/pricing/) from clients, partners and members of our community.  If you're in a position to contribute financially, please consider doing so.
 
