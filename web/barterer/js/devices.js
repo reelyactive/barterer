@@ -68,6 +68,7 @@ let connection = document.querySelector('#connection');
 let noUpdates = document.querySelector('#settingsNoUpdates');
 let realTimeUpdates = document.querySelector('#settingsRealTimeUpdates');
 let periodicUpdates = document.querySelector('#settingsPeriodicUpdates');
+let returnButton = document.querySelector('#returnbutton');
 let jsonResponse = document.querySelector('#jsonResponse');
 let loading = document.querySelector('#loading');
 let error = document.querySelector('#error');
@@ -101,6 +102,13 @@ periodicUpdates.onchange = updateUpdates;
 humanTab.onclick = unselectHyperlocalContext;
 hlcTab.onclick = selectHyperlocalContext;
 machineTab.onclick = unselectHyperlocalContext;
+
+
+// Hide "return to /devices" button when already querying /devices route
+if((window.location.pathname.endsWith(DEVICES_ROUTE )) ||
+   (window.location.pathname.endsWith(DEVICES_ROUTE + '/'))) {
+  returnButton.hidden = true;
+}
 
 
 // Initialisation: poll the devices once and display the result
