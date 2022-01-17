@@ -5,7 +5,7 @@ barterer
 A real-time location & sensor data API for the IoT
 --------------------------------------------------
 
-__barterer__ is an API for the real-time location of wireless devices and a core module of the [Pareto Anywhere](https://www.reelyactive.com/pareto/anywhere/) open source software of the [reelyActive technology platform](https://www.reelyactive.com/technology/).
+__barterer__ is an API for the real-time location, identification and sensing of wireless devices, and a core module of reelyActive's [Pareto Anywhere](https://www.reelyactive.com/pareto/anywhere/) open source middleware for context-aware physical spaces.
 
 
 Installation
@@ -127,6 +127,20 @@ Retrieve the active device with the given _id_ and _type_.
         }
       }
     }
+
+
+Socket.IO
+---------
+
+When initialised with a Socket.IO server as an option, __barterer__ supports the following namespaces:
+- /devices
+- /devices/raddec
+- /devices/dynamb
+- /devices/{id}/{type}
+- /devices/{id}/{type}/raddec
+- /devices/{id}/{type}/dynamb
+
+Both raddec and dynamb events are emitted except for namespaces ending with /raddec or /dynamb, in which case only the specified event is emitted.  For an example of the raddec and dynamb JSON structure, see each corresponding object within the sample response of the REST API above.
 
 
 ![barterer logo](https://reelyactive.github.io/barterer/images/barterer-bubble.png)
