@@ -1,5 +1,5 @@
 /**
- * Copyright reelyActive 2015-2021
+ * Copyright reelyActive 2015-2022
  * We believe in an open Internet of Things
  */
 
@@ -19,7 +19,9 @@ const IDENTIFIER_TYPES = [
     'Unknown',
     'EUI-64',
     'EUI-48',
-    'RND-48'
+    'RND-48',
+    'TID-96',
+    'EPC-96'
 ];
 const EVENT_ICONS = [
     'fas fa-sign-in-alt',
