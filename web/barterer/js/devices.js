@@ -280,15 +280,20 @@ function createRaddecContent(raddec) {
                                 createRssiSignatureTable(raddec.rssiSignature));
   let receiverRow = createElement('tr', null, [ receiverHeader,
                                                 receiverTable ]);
-  let packetsIcon = createElement('i', 'fas fa-info');
-  let packetsHeader = createElement('th', 'bg-ambient text-white text-center',
-                                    packetsIcon);
-  let packetsCollapse = createElement('td', null, 
-                                      createPacketsCollapse(raddec.packets));
-  let packetsRow = createElement('tr', null, [ packetsHeader,
-                                               packetsCollapse ]);
-  let tbody = createElement('tbody', null, [ deviceRow, eventRow, receiverRow,
-                                             packetsRow ]);
+  let rows = [ deviceRow, eventRow, receiverRow ];
+
+  if(Array.isArray(raddec.packets)) {
+    let packetsIcon = createElement('i', 'fas fa-info');
+    let packetsHeader = createElement('th', 'bg-ambient text-white text-center',
+                                      packetsIcon);
+    let packetsCollapse = createElement('td', null, 
+                                        createPacketsCollapse(raddec.packets));
+    let packetsRow = createElement('tr', null, [ packetsHeader,
+                                                 packetsCollapse ]);
+    rows.push(packetsRow);
+  }
+
+  let tbody = createElement('tbody', null, rows);
   let table = createElement('table', 'table', tbody);
 
   return table;
