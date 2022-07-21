@@ -320,7 +320,8 @@ function createRssiSignatureTable(rssiSignature) {
   let tbody = createElement('tbody');
 
   rssiSignature.forEach(function(item, index) {
-    let signature = item.receiverId + SIGNATURE_SEPARATOR + item.receiverIdType;
+    let signature = item.receiverId + ' / ' +
+                    IDENTIFIER_TYPES[item.receiverIdType];
     let rowClass = (index === 0) ? 'table-success' : null;
     let receiverSignature = createElement('td', 'font-monospace', signature);
     let decodingText = item.numberOfDecodings + ' @ ' + item.rssi + ' dBm';
