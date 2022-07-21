@@ -21,7 +21,8 @@ const IDENTIFIER_TYPES = [
     'EUI-48',
     'RND-48',
     'TID-96',
-    'EPC-96'
+    'EPC-96',
+    'UUID-128'
 ];
 const EVENT_ICONS = [
     'fas fa-sign-in-alt',
