@@ -31,6 +31,8 @@ const EVENT_ICONS = [
     'fas fa-heartbeat',
     'fas fa-sign-out-alt'
 ];
+const POSITION_AXES = [ 'x', 'y', 'z' ];
+const POSITION_PRECISION = 6;
 const MAX_RSSI = -30;
 const HLC_MIN_HEIGHT_PX = 480;
 const HLC_UNUSABLE_HEIGHT_PX = 260;
@@ -293,6 +295,18 @@ function createRaddecContent(raddec) {
     rows.push(packetsRow);
   }
 
+  if(Array.isArray(raddec.position)) {
+    let positionIcon = createElement('i', 'fas fa-map-marked-alt');
+    let positionHeader = createElement('th',
+                                       'bg-primary text-white text-center',
+                                       positionIcon);
+    let positionTable = createElement('td', null,
+                                      createPositionTable(raddec.position));
+    let positionRow = createElement('tr', null, [ positionHeader,
+                                                  positionTable ]);
+    rows.push(positionRow);
+  }
+
   let tbody = createElement('tbody', null, rows);
   let table = createElement('table', 'table', tbody);
 
@@ -356,6 +370,22 @@ function createPacketsCollapse(packets) {
   content.appendChild(collapse);
 
   return content;
+}
+
+
+// Create the position table visualisation
+function createPositionTable(position) {
+  let tbody = createElement('tbody', 'font-monospace');
+
+  position.forEach((value, index) => {
+    let th = createElement('th', 'text-muted', POSITION_AXES[index] + ':');
+    let td = createElement('td', 'text-end', value.toFixed(POSITION_PRECISION));
+
+    tbody.appendChild(createElement('tr', null, [ th, td ]));
+  });
+
+  return createElement('table', 'table table-sm table-borderless w-25 mb-0',
+                       tbody);
 }
 
 
