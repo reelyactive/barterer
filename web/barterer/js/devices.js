@@ -1,5 +1,5 @@
 /**
- * Copyright reelyActive 2015-2022
+ * Copyright reelyActive 2015-2023
  * We believe in an open Internet of Things
  */
 
@@ -333,9 +333,12 @@ function createStatidContent(statid) {
 function createRssiSignatureTable(rssiSignature) {
   let tbody = createElement('tbody');
 
-  rssiSignature.forEach(function(item, index) {
+  rssiSignature.forEach(function(item, index) { console.log(item);
     let signature = item.receiverId + ' / ' +
                     IDENTIFIER_TYPES[item.receiverIdType];
+    if(item.hasOwnProperty('receiverAntenna')) {
+      signature += ' / ' + item.receiverAntenna;
+    }
     let rowClass = (index === 0) ? 'table-success' : null;
     let receiverSignature = createElement('td', 'font-monospace', signature);
     let decodingText = item.numberOfDecodings + ' @ ' + item.rssi + ' dBm';
