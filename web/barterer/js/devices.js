@@ -13,8 +13,6 @@ const MESSAGE_BAD_REQUEST = 'Bad Request [400].  An error likely occurred on the
 const MESSAGE_NOT_FOUND = 'Device Not Found [404].';
 const POLLING_INTERVAL_MILLISECONDS = 10000;
 const DEVICES_ROUTE = '/devices';
-const CYTOSCAPE_URL = '/js/cytoscape.min.js';
-const SIGNATURE_SEPARATOR = '/';
 const IDENTIFIER_TYPES = [
     'Unknown',
     'EUI-64',
@@ -22,7 +20,8 @@ const IDENTIFIER_TYPES = [
     'RND-48',
     'TID-96',
     'EPC-96',
-    'UUID-128'
+    'UUID-128',
+    'EURID-32'
 ];
 const EVENT_ICONS = [
     'fas fa-sign-in-alt',
@@ -33,39 +32,8 @@ const EVENT_ICONS = [
 ];
 const POSITION_AXES = [ 'x', 'y', 'z' ];
 const POSITION_PRECISION = 6;
-const MAX_RSSI = -30;
 const HLC_MIN_HEIGHT_PX = 480;
 const HLC_UNUSABLE_HEIGHT_PX = 260;
-const GRID_LAYOUT_OPTIONS = {
-    name: "grid"
-};
-const COSE_LAYOUT_OPTIONS = {
-    name: "cose",
-    animate: false,
-    randomize: false,
-    idealEdgeLength: function(edge) { return MAX_RSSI - edge.data('rssi'); },
-    edgeElasticity: function(edge) { return 32 *
-                                           (MAX_RSSI - edge.data('rssi')); },
-    initialTemp: 40
-};
-const GRAPH_STYLE = [
-    { selector: "node[type='transmitter']",
-      style: { "background-color": "#83b7d0", label: "data(id)",
-               "font-family": "monospace", "font-size": "0.6em",
-               "min-zoomed-font-size": "16px" } },
-    { selector: "node[type='receiver']",
-      style: { "background-color": "#aec844", label: "data(id)",
-               "font-family": "monospace", "font-size": "0.4em",
-               "min-zoomed-font-size": "16px" } },
-    { selector: "node[image]",
-      style: { "background-image": "data(image)", "border-color": "#aec844",
-               "background-fit": "cover cover", "border-width": "2px" } },
-    { selector: "edge", style: { "curve-style": "haystack",
-                                 "line-color": "#ddd", label: "data(name)",
-                                 "text-rotation": "autorotate",
-                                 color: "#5a5a5a", "font-size": "0.25em",
-                                 "min-zoomed-font-size": "12px" } },
-];
 
 
 // DOM elements
@@ -93,8 +61,6 @@ let isHyperlocalContextSelected = false;
 let pollingInterval;
 let machineReadableData;
 let socket;
-let cy;
-let layout;
 
 
 // Monitor each settings radio button
@@ -333,7 +299,7 @@ function createStatidContent(statid) {
 function createRssiSignatureTable(rssiSignature) {
   let tbody = createElement('tbody');
 
-  rssiSignature.forEach(function(item, index) { console.log(item);
+  rssiSignature.forEach(function(item, index) {
     let signature = item.receiverId + ' / ' +
                     IDENTIFIER_TYPES[item.receiverIdType];
     if(item.hasOwnProperty('receiverAntenna')) {
@@ -474,8 +440,7 @@ function createSocket() {
   socket.on('raddec', function(raddec) {
     let raddecContent = createRaddecContent(raddec);
     let raddecContainer = document.querySelector('#raddeccontainer');
-    let signature = raddec.transmitterId + SIGNATURE_SEPARATOR +
-                    raddec.transmitterIdType;
+    let signature = raddec.transmitterId + '/' + raddec.transmitterIdType;
     machineReadableData.devices[signature].raddec = raddec;
     jsonResponse.textContent = JSON.stringify(machineReadableData, null, 2);
 
@@ -489,8 +454,7 @@ function createSocket() {
   socket.on('dynamb', function(dynamb) {
     let dynambContent = cuttlefishDynamb.render(dynamb);
     let dynambContainer = document.querySelector('#dynambcontainer');
-    let signature = dynamb.deviceId + SIGNATURE_SEPARATOR +
-                    dynamb.deviceIdType;
+    let signature = dynamb.deviceId + '/' + dynamb.deviceIdType;
     machineReadableData.devices[signature].dynamb = dynamb;
     jsonResponse.textContent = JSON.stringify(machineReadableData, null, 2);
 
@@ -531,35 +495,6 @@ function updateUpdates(event) {
 }
 
 
-// Add a device node to the hyperlocal context graph
-function addDeviceNode(deviceSignature, device) {
-  cy.add({ group: "nodes", renderedPosition: { x: 0, y: 0 },
-           data: { id: deviceSignature, type: "transmitter" } });
-
-  if(device.hasOwnProperty('raddec')) {
-    device.raddec.rssiSignature.forEach(function(entry) {
-      let receiverSignature = entry.receiverId + SIGNATURE_SEPARATOR +
-                              entry.receiverIdType;
-      let edgeSignature = deviceSignature + '@' + receiverSignature;
-      isExistingNode = (cy.getElementById(receiverSignature).size() > 0);
-      isExistingEdge = (cy.getElementById(edgeSignature).size() > 0);
-
-      if(!isExistingNode) {
-        cy.add({ group: "nodes", data: { id: receiverSignature,
-                                         type: "receiver" } });
-      }
-      if(!isExistingEdge) {
-        cy.add({ group: "edges", data: { id: edgeSignature,
-                                         source: deviceSignature,
-                                         target: receiverSignature,
-                                         name: entry.rssi + "dBm",
-                                         rssi: entry.rssi } });
-      }
-    });
-  }
-}
-
-
 // Unselect the hyperlocal context graph tab
 function unselectHyperlocalContext() {
   isHyperlocalContextSelected = false;
@@ -585,34 +520,10 @@ function selectHyperlocalContext() {
 
 // Render the hyperlocal context graph
 function renderHyperlocalContext() {
-  let options = {
-      container: document.getElementById('cy'),
-      layout: GRID_LAYOUT_OPTIONS,
-      style: GRAPH_STYLE
-  };
-  let layoutName = 'grid';
-  let isSpecificDevice = (window.location.pathname.length >
-                          DEVICES_ROUTE.length + 1);
-
-  if(isSpecificDevice) {
-    options.layout = COSE_LAYOUT_OPTIONS;
-    layoutName = 'cose';
-  }
-
-  cy = cytoscape(options);
-  layout = cy.layout({ name: layoutName, cy: cy });
+  let target = document.getElementById('cy');
 
   if(machineReadableData) {
-    let devicesList = machineReadableData.devices || {};
-
-    for(const deviceSignature in devicesList) {
-      let device = devicesList[deviceSignature];
-
-      addDeviceNode(deviceSignature, device);
-    }
+    charlotte.init(target, {});
+    charlotte.spin(machineReadableData.devices || {}, target);
   }
-
-  layout.stop();
-  layout = cy.elements().makeLayout(options.layout);
-  layout.run();
 }
