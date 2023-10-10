@@ -169,8 +169,6 @@ Security
 
 Consult our [security policy](SECURITY.md) for best practices using this open source software and to report vulnerabilities.
 
-[![Known Vulnerabilities](https://snyk.io/test/github/reelyactive/barterer/badge.svg)](https://snyk.io/test/github/reelyactive/barterer)
-
 
 License
 -------
