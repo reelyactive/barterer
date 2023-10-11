@@ -446,7 +446,8 @@ function createSocket() {
   });
 
   socket.on('dynamb', function(dynamb) {
-    let dynambContent = cuttlefishDynamb.render(dynamb);
+    let dynambContent = cuttlefishDynamb.render(dynamb, null,
+                                                { hideDeviceId: true });
     let dynambContainer = document.querySelector('#dynambcontainer');
     let signature = dynamb.deviceId + '/' + dynamb.deviceIdType;
     machineReadableData.devices[signature].dynamb = dynamb;
@@ -456,7 +457,8 @@ function createSocket() {
   });
 
   socket.on('spatem', function(spatem) {
-    let spatemContent = cuttlefishSpatem.render(spatem);
+    let spatemContent = cuttlefishSpatem.render(spatem, null,
+                                                { hideDeviceId: true });
     let spatemContainer = document.querySelector('#spatemcontainer');
     let signature = spatem.deviceId + '/' + spatem.deviceIdType;
     machineReadableData.devices[signature].spatem = spatem;
