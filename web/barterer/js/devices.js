@@ -201,24 +201,27 @@ function createDeviceAccordion(device) {
                                          raddecContent, 'raddeccontainer');
     accordion.appendChild(raddecItem);
   }
-  if(device.hasOwnProperty('dynamb')) {
-    let dynambContent = cuttlefishDynamb.render(device.dynamb);
-    let dynambIcon = createElement('i', 'fas fa-tachometer-alt');
-    let dynambTitle = createElement('span', null,
-                                    [ dynambIcon, '\u00a0 dynamb' ]);
-    let dynambItem = createAccordionItem('dynamb', accordionId, dynambTitle,
-                                         dynambContent, 'dynambcontainer');
-    accordion.appendChild(dynambItem);
-  }
-  if(device.hasOwnProperty('spatem')) {
-    let spatemContent = cuttlefishSpatem.render(device.spatem);
-    let spatemIcon = createElement('i', 'fas fa-map-marked-alt');
-    let spatemTitle = createElement('span', null,
-                                    [ spatemIcon, '\u00a0 spatem' ]);
-    let spatemItem = createAccordionItem('spatem', accordionId, spatemTitle,
-                                         spatemContent, 'spatemcontainer');
-    accordion.appendChild(spatemItem);
-  }
+
+  let dynambContent = cuttlefishDynamb.render(device.dynamb || {});
+  let dynambIcon = createElement('i', 'fas fa-tachometer-alt');
+  let dynambTitle = createElement('span', null,
+                                  [ dynambIcon, '\u00a0 dynamb' ]);
+  let dynambItem = createAccordionItem('dynamb', accordionId, dynambTitle,
+                                       dynambContent, 'dynambcontainer');
+  dynambItem.id = 'dynambitem';
+  dynambItem.hidden = !device.hasOwnProperty('dynamb');
+  accordion.appendChild(dynambItem);
+
+  let spatemContent = cuttlefishSpatem.render(device.spatem || {});
+  let spatemIcon = createElement('i', 'fas fa-map-marked-alt');
+  let spatemTitle = createElement('span', null,
+                                  [ spatemIcon, '\u00a0 spatem' ]);
+  let spatemItem = createAccordionItem('spatem', accordionId, spatemTitle,
+                                       spatemContent, 'spatemcontainer');
+  spatemItem.id = 'spatemitem';
+  spatemItem.hidden = !device.hasOwnProperty('spatem');
+  accordion.appendChild(spatemItem);
+
   if(device.hasOwnProperty('statid')) {
     let statidContent = cuttlefishStatid.render(device.statid);
     let statidIcon = createElement('i', 'fas fa-id-card');
@@ -454,6 +457,7 @@ function createSocket() {
     jsonResponse.textContent = JSON.stringify(machineReadableData, null, 2);
 
     dynambContainer.replaceChildren(dynambContent);
+    document.querySelector('#dynambitem').hidden = false;
   });
 
   socket.on('spatem', function(spatem) {
@@ -465,6 +469,7 @@ function createSocket() {
     jsonResponse.textContent = JSON.stringify(machineReadableData, null, 2);
 
     spatemContainer.replaceChildren(spatemContent);
+    document.querySelector('#spatemitem').hidden = false;
   });
 
   socket.on('connect_error', function() {
