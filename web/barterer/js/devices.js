@@ -220,7 +220,7 @@ function createDeviceAccordion(device) {
     accordion.appendChild(spatemItem);
   }
   if(device.hasOwnProperty('statid')) {
-    let statidContent = createStatidContent(device.statid);
+    let statidContent = cuttlefishStatid.render(device.statid);
     let statidIcon = createElement('i', 'fas fa-id-card');
     let statidTitle = createElement('span', null,
                                     [ statidIcon, '\u00a0 statid' ]);
@@ -286,21 +286,6 @@ function createRaddecContent(raddec) {
   let table = createElement('table', 'table', tbody);
 
   return table;
-}
-
-
-// Create the statid visualisation
-function createStatidContent(statid) {
-  let tbody = createElement('tbody');
-
-  for(const property in statid) {
-    let th = createElement('th', null, property);
-    let td = createElement('td', 'font-monospace', statid[property].toString());
-    let row = createElement('tr', null, [ th, td ]);
-    tbody.appendChild(row);
-  }
-
-  return createElement('table', 'table table-hover', tbody);
 }
 
 
