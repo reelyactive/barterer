@@ -210,6 +210,15 @@ function createDeviceAccordion(device) {
                                          dynambContent, 'dynambcontainer');
     accordion.appendChild(dynambItem);
   }
+  if(device.hasOwnProperty('spatem')) {
+    let spatemContent = cuttlefishSpatem.render(device.spatem);
+    let spatemIcon = createElement('i', 'fas fa-map-marked-alt');
+    let spatemTitle = createElement('span', null,
+                                    [ spatemIcon, '\u00a0 spatem' ]);
+    let spatemItem = createAccordionItem('spatem', accordionId, spatemTitle,
+                                         spatemContent, 'spatemcontainer');
+    accordion.appendChild(spatemItem);
+  }
   if(device.hasOwnProperty('statid')) {
     let statidContent = createStatidContent(device.statid);
     let statidIcon = createElement('i', 'fas fa-id-card');
@@ -459,6 +468,16 @@ function createSocket() {
     jsonResponse.textContent = JSON.stringify(machineReadableData, null, 2);
 
     dynambContainer.replaceChildren(dynambContent);
+  });
+
+  socket.on('spatem', function(spatem) {
+    let spatemContent = cuttlefishSpatem.render(spatem);
+    let spatemContainer = document.querySelector('#spatemcontainer');
+    let signature = spatem.deviceId + '/' + spatem.deviceIdType;
+    machineReadableData.devices[signature].spatem = spatem;
+    jsonResponse.textContent = JSON.stringify(machineReadableData, null, 2);
+
+    spatemContainer.replaceChildren(spatemContent);
   });
 
   socket.on('connect_error', function() {
