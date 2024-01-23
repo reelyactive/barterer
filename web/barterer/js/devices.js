@@ -166,7 +166,7 @@ function createDeviceCard(signature, device) {
   let header = createElement('div', 'card-header bg-dark text-white lead',
                              [ headerIcon, headerText ]);
   let body = createElement('div', 'card-body');
-  let footerIcon = createElement('i', 'fas fa-link text-muted');
+  let footerIcon = createElement('i', 'fas fa-link text-body-secondary');
   let footerText = createElement('a', 'text-truncate', deviceUrl);
   let footer = createElement('small', 'card-footer',
                              [ footerIcon, ' ', footerText ]);
@@ -302,7 +302,7 @@ function createRssiSignatureTable(rssiSignature) {
     if(item.hasOwnProperty('receiverAntenna')) {
       signature += ' / ' + item.receiverAntenna;
     }
-    let rowClass = (index === 0) ? 'table-success' : null;
+    let rowClass = (index === 0) ? 'table-active' : null;
     let receiverSignature = createElement('td', 'font-monospace', signature);
     let decodingText = item.numberOfDecodings + ' @ ' + item.rssi + ' dBm';
     let decodings = createElement('td', 'font-monospace', decodingText);
@@ -344,7 +344,8 @@ function createPositionTable(position) {
   let tbody = createElement('tbody', 'font-monospace');
 
   position.forEach((value, index) => {
-    let th = createElement('th', 'text-muted', POSITION_AXES[index] + ':');
+    let th = createElement('th', 'text-body-secondary',
+                           POSITION_AXES[index] + ':');
     let td = createElement('td', 'text-end', value.toFixed(POSITION_PRECISION));
 
     tbody.appendChild(createElement('tr', null, [ th, td ]));
