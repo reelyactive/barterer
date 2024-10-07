@@ -113,6 +113,26 @@ Retrieve the active device with the given _id_ and _type_.
               0.3984375
             ]
           },
+          "spatem": {
+            "timestamp": 1621865950453,
+            "type": "position",
+            "data": {
+              "type": "FeatureCollection",
+              "features": [
+                {
+                  "type": "Feature",
+                  "properties": {
+                    "isDevicePosition": true,
+                    "positioningEngine": "External"
+                  },
+                  "geometry": {
+                    "type": "Point",
+                    "coordinates": [ -73.57123, 45.50883 ]
+                  }
+                }
+              ]
+            }
+          },
           "statid": {
             "uuids": [
               "ffe1",
@@ -136,11 +156,13 @@ When initialised with a Socket.IO server as an option, __barterer__ supports the
 - /devices
 - /devices/raddec
 - /devices/dynamb
+- /devices/spatem
 - /devices/{id}/{type}
 - /devices/{id}/{type}/raddec
 - /devices/{id}/{type}/dynamb
+- /devices/{id}/{type}/spatem
 
-Both raddec and dynamb events are emitted except for namespaces ending with /raddec or /dynamb, in which case only the specified event is emitted.  For an example of the raddec and dynamb JSON structure, see each corresponding object within the sample response of the REST API above.
+raddec, dynamb and spatem events are emitted except for namespaces ending with /raddec, /dynamb or /spatem, in which case only the specified event is emitted.  For an example of the raddec, dynamb JSON structures, consult the [reelyActive Developer's Cheatsheet](https://reelyactive.github.io/diy/cheatsheet/) as well as the sample response of the REST API above.
 
 
 ![barterer logo](https://reelyactive.github.io/barterer/images/barterer-bubble.png)
