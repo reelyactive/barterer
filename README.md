@@ -1,13 +1,11 @@
 barterer
 ========
 
-
-A real-time location & sensor data API for the IoT
---------------------------------------------------
-
-__barterer__ is an API for the real-time location, identification and sensing of wireless devices, and a core module of [Pareto Anywhere](https://www.reelyactive.com/pareto/anywhere/) open source middleware for context-aware physical spaces.
+__barterer__ is an API for the real-time location, identification and sensing of wireless devices, and a core module of [Pareto Anywhere](https://www.reelyactive.com/pareto/anywhere/) open source IoT middleware.
 
 ![Overview of barterer](https://reelyactive.github.io/barterer/images/overview.png)
+
+Specifically, __barterer__ provides a vendor-and-technology-agnostic IoT API when coupled with live data from a [barnacles](https://github.com/reelyactive/barnacles/) instance and optional [chimps](https://github.com/reelyactive/chimps/) instance.   __barterer__ can run standalone, although it is usually run together with its peer modules.
 
 
 Installation
