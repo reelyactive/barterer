@@ -1,5 +1,5 @@
 /**
- * Copyright reelyActive 2015-2023
+ * Copyright reelyActive 2015-2026
  * We believe in an open Internet of Things
  */
 
@@ -221,6 +221,17 @@ function createDeviceAccordion(device) {
   spatemItem.id = 'spatemitem';
   spatemItem.hidden = !device.hasOwnProperty('spatem');
   accordion.appendChild(spatemItem);
+
+  let encryptedContent = cuttlefishEncrypted.render(device.encrypted || {});
+  let encryptedIcon = createElement('i', 'fas fa-lock');
+  let encryptedTitle = createElement('span', null,
+                                     [ encryptedIcon, '\u00a0 encrypted' ]);
+  let encryptedItem = createAccordionItem('encrypted', accordionId,
+                                          encryptedTitle, encryptedContent,
+                                          'encryptedcontainer');
+  encryptedItem.id = 'encrypteditem';
+  encryptedItem.hidden = !device.hasOwnProperty('encrypted');
+  accordion.appendChild(encryptedItem);
 
   if(device.hasOwnProperty('statid')) {
     let statidContent = cuttlefishStatid.render(device.statid);
@@ -471,6 +482,18 @@ function createSocket() {
 
     spatemContainer.replaceChildren(spatemContent);
     document.querySelector('#spatemitem').hidden = false;
+  });
+
+  socket.on('encrypted', function(encrypted) {
+    let encryptedContent = cuttlefishEncrypted.render(encrypted, null,
+                                                      { hideDeviceId: true });
+    let encryptedContainer = document.querySelector('#encryptedcontainer');
+    let signature = encrypted.deviceId + '/' + encrypted.deviceIdType;
+    machineReadableData.devices[signature].encrypted = encrypted;
+    jsonResponse.textContent = JSON.stringify(machineReadableData, null, 2);
+
+    encryptedContainer.replaceChildren(encryptedContent);
+    document.querySelector('#encrypteditem').hidden = false;
   });
 
   socket.on('connect_error', function() {
