@@ -5,14 +5,14 @@
     "name": "reelyActive",
     "email": "info@reelyactive.com"
   },
-  "description": "Real-time location and sensor data API.  We believe in an open Internet of Things.",
+  "description": "Real-time location & sensor data API for the IoT.  We believe in an open Internet of Things.",
   "keywords": [
     "reelyActive",
     "API",
     "IoT",
     "RTLS"
   ],
-  "version": "1.5.8",
+  "version": "1.6.0",
   "engines": {
     "node": ">=18.0.0"
   },
